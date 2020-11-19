@@ -1,4 +1,4 @@
-package Logic;
+package Logic.Checkers;
 
 public class RedChecker extends Checker {
 
@@ -7,7 +7,5 @@ public class RedChecker extends Checker {
     }
 
     @Override
-    public String getColour() {
-        return colour;
-    }
+    public String getColour() { return colour; }
 }

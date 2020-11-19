@@ -1,4 +1,6 @@
-package Logic;
+package Logic.Squares;
+
+import Logic.Checkers.Checker;
 
 public abstract class Square {
 

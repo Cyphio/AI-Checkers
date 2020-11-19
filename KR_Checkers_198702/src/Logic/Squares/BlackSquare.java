@@ -1,4 +1,6 @@
-package Logic;
+package Logic.Squares;
+
+import Logic.Checkers.Checker;
 
 public class BlackSquare extends Square {
 
@@ -9,9 +11,7 @@ public class BlackSquare extends Square {
     }
 
     @Override
-    public void setChecker(Checker checker) {
-        this.checker = checker;
-    }
+    public void setChecker(Checker checker) { this.checker = checker; }
 
     @Override
     public Checker getChecker() {
@@ -19,7 +19,5 @@ public class BlackSquare extends Square {
     }
 
     @Override
-    public Boolean canMoveTo() {
-        return true;
-    }
+    public Boolean canMoveTo() { return true; }
 }
