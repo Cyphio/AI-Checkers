@@ -47,6 +47,28 @@ public class Game {
         return(!midSquare.getChecker().getColour().equals(checker.getColour()));
     }
 
+    private boolean canPerformCapture(Checker checker) {
+        int[] currCoor = board.getPosOfChecker(checker);
+        if (checker.getColour().equals("white")) {
+            int[][] surrounding = new int[][]{{2, -2}, {2, 2}};
+            for (int[] surrCoor : surrounding) {
+                int[] newCoor = new int[]{currCoor[0] + surrCoor[0], currCoor[1] + surrCoor[1]};
+                if ((newCoor[0] >= 0 && newCoor[0] < board.getSize() - 1) && (newCoor[1] >= 0 && newCoor[1] < board.getSize() - 1)) {
+                    if (isCapturingMove(checker, newCoor)) { return true; }
+                }
+            }
+        } else if (checker.getColour().equals("red")) {
+            int[][] surrounding = new int[][]{{-2, -2}, {-2, 2}};
+            for (int[] surrCoor : surrounding) {
+                int[] newCoor = new int[]{currCoor[0] + surrCoor[0], currCoor[1] + surrCoor[1]};
+                if ((newCoor[0] >= 0 && newCoor[0] < board.getSize() - 1) && (newCoor[1] >= 0 && newCoor[1] < board.getSize() - 1)) {
+                    if (isCapturingMove(checker, newCoor)) { return true; }
+                }
+            }
+        }
+        return false;
+    }
+
     private boolean isLegalDiagonalMove(Checker checker, int[] currCoor, int[] newCoor) {
         if(checker.getColour().equals("white")) {
             return (newCoor[0] - currCoor[0] == 1) && (Math.pow((newCoor[1] - currCoor[1]), 2) == 1);
@@ -63,6 +85,7 @@ public class Game {
         System.out.println(g.moveChecker(g.getBoard().getSquareAt(new int[]{5, 3}).getChecker(), new int[]{4, 2}));
         g.getBoard().displayBoardAsString();
 
-        System.out.println("CAN WHITE MAKE A CAPTURING MOVE? " + g.isCapturingMove(g.getBoard().getSquareAt(new int[]{3, 1}).getChecker(), new int[]{5, 3}));
+        System.out.println("CAN WHITE MAKE CAPTURE? " + g.canPerformCapture(g.getBoard().getSquareAt(new int[]{4, 2}).getChecker()));
+        //System.out.println("IS MOVE CAPTURING? " + g.isCapturingMove(g.getBoard().getSquareAt(new int[]{3, 1}).getChecker(), new int[]{5, 3}));
     }
 }

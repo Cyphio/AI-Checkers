@@ -26,6 +26,10 @@ public class GameBoard {
         }
     }
 
+    public int getSize() {
+        return size;
+    }
+
     public void setUpCheckers(ArrayList<Checker> whites, ArrayList<Checker> reds) {
         for(Checker white : whites) {
             int i = 0; int j = 0;
