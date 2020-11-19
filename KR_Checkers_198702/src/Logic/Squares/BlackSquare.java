@@ -8,10 +8,20 @@ public class BlackSquare extends Square {
 
     public BlackSquare() {
         this.colour = "black";
+        checker = null;
     }
 
     @Override
-    public void setChecker(Checker checker) { this.checker = checker; }
+    public boolean setChecker(Checker checker) {
+        this.checker = checker;
+        return true;
+    }
+
+    @Override
+    public boolean removeChecker() {
+        checker = null;
+        return true;
+    }
 
     @Override
     public Checker getChecker() {
@@ -19,5 +29,5 @@ public class BlackSquare extends Square {
     }
 
     @Override
-    public Boolean canMoveTo() { return true; }
+    public boolean canMoveTo() { return getChecker() == null; }
 }

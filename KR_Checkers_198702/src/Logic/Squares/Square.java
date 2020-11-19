@@ -10,10 +10,12 @@ public abstract class Square {
         return colour;
     }
 
-    public abstract void setChecker(Checker checker);
+    public abstract boolean setChecker(Checker checker);
+
+    public abstract boolean removeChecker();
 
     public abstract Checker getChecker();
 
-    public abstract Boolean canMoveTo();
+    public abstract boolean canMoveTo();
 }
 

@@ -9,11 +9,14 @@ public class WhiteSquare extends Square {
     }
 
     @Override
-    public void setChecker(Checker checker) { }
+    public boolean setChecker(Checker checker) { return false; }
+
+    @Override
+    public boolean removeChecker() { return false; }
 
     @Override
     public Checker getChecker() { return null; }
 
     @Override
-    public Boolean canMoveTo() { return false; }
+    public boolean canMoveTo() { return false; }
 }
