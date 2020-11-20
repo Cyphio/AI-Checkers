@@ -13,7 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class UI extends Application {
+public class CheckersGUI extends Application {
 
     private GridPane grid;
     private int boardSize;
@@ -24,7 +24,7 @@ public class UI extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.window = primaryStage;
-        window.setTitle("Checkers");
+        window.setTitle("Checkers Main Menu");
         grid = new GridPane();
         grid.setPadding(new Insets(25, 25, 25, 25));
         grid.setAlignment(Pos.CENTER);
@@ -34,10 +34,6 @@ public class UI extends Application {
             createGame();
         });
 
-        Button save = new Button("Save");
-        save.setOnAction(e -> {
-        });
-
         Button load = new Button ("Load");
         load.setOnAction(e -> {
         });
@@ -45,14 +41,13 @@ public class UI extends Application {
         HBox h = new HBox();
         h.setAlignment(Pos.CENTER);
         h.setSpacing(5);
-        h.getChildren().addAll(generateNewGame, save, load);
+        h.getChildren().addAll(generateNewGame, load);
 
         VBox v = new VBox();
         v.setPadding(new Insets(25, 25, 25, 25));
         v.setAlignment(Pos.CENTER);
         v.getChildren().addAll(h, grid);
 
-        //primaryStage.setMaximized(true);
         window.setScene(new Scene(v, 750, 750));
         window.show();
     }

@@ -2,7 +2,7 @@ package Logic;
 
 import Logic.Checkers.Checker;
 import Logic.Checkers.RedChecker;
-import Logic.Checkers.WhiteChecker;
+import Logic.Checkers.BlackChecker;
 import Logic.Squares.Square;
 
 import java.util.ArrayList;
@@ -11,29 +11,29 @@ import java.util.Arrays;
 public class Game {
 
     private GameBoard board;
-    private ArrayList<Checker> whites;
+    private ArrayList<Checker> blacks;
     private ArrayList<Checker> reds;
-    private int whitePoints;
+    private int blackPoints;
     private int redPoints;
 
     public Game(int board_size, int n_checkers) {
         board = new GameBoard(board_size);
-        whitePoints = 0;
+        blackPoints = 0;
         redPoints = 0;
 
-        whites = new ArrayList<>();
+        blacks = new ArrayList<>();
         reds = new ArrayList<>();
         for(int i=0; i<n_checkers; i++) {
-            whites.add(new WhiteChecker());
+            blacks.add(new BlackChecker());
             reds.add(new RedChecker());
         }
 
-        board.setUpCheckers(whites, reds);
+        board.setUpCheckers(blacks, reds);
     }
 
     public GameBoard getBoard() { return board; }
 
-    public int getWhitePoints() { return whitePoints; }
+    public int getBlackPoints() { return blackPoints; }
 
     public int getRedPoints() { return redPoints; }
 
@@ -85,7 +85,7 @@ public class Game {
         int[] midCoor = new int[]{(currCoor[0] + newCoor[0])/2, (currCoor[1] + newCoor[1])/2};
         Square midSquare = board.getSquareAt(midCoor);
         board.getSquareAt(midCoor).removeChecker();
-        if(checker.getColour().equals("white")) { whitePoints++; }
+        if(checker.getColour().equals("black")) { blackPoints++; }
         else if (checker.getColour().equals("red")) { redPoints++; }
     }
 

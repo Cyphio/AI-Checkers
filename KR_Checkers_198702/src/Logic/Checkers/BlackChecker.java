@@ -1,9 +1,9 @@
 package Logic.Checkers;
 
-public class WhiteChecker extends Checker {
+public class BlackChecker extends Checker {
 
-    public WhiteChecker() {
-        this.colour = "white";
+    public BlackChecker() {
+        this.colour = "black";
         this.isKing = false;
         this.moveCoors = new int[][]{{1, -1}, {1, 1}};
         this.jumpCoors = new int[][]{{2, -2}, {2, 2}};

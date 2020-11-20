@@ -30,13 +30,13 @@ public class GameBoard {
         return size;
     }
 
-    public void setUpCheckers(ArrayList<Checker> whites, ArrayList<Checker> reds) {
-        for(Checker white : whites) {
+    public void setUpCheckers(ArrayList<Checker> blacks, ArrayList<Checker> reds) {
+        for(Checker black : blacks) {
             int i = 0; int j = 0;
             while (!(board[i][j].canMoveTo())) {
                 if ((j + 1) % size == 0) { i++; j = 0; } else { j++; }
             }
-            board[i][j].setChecker(white);
+            board[i][j].setChecker(black);
         }
 
         for(Checker red : reds) {
@@ -73,7 +73,7 @@ public class GameBoard {
         for(int i=0; i<size; i++){
             for(int j=0; j<size; j++) {
                 if(board[i][j].getChecker() != null) {
-                    if (board[i][j].getChecker().getColour().equals("white")) {
+                    if (board[i][j].getChecker().getColour().equals("black")) {
                         System.out.print("| " + board[i][j].getChecker().getColour() + " | ");
                     } else if (board[i][j].getChecker().getColour().equals("red")) {
                         System.out.print("|  " + board[i][j].getChecker().getColour() + "  | ");
