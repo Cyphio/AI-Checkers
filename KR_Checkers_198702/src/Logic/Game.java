@@ -37,20 +37,21 @@ public class Game {
 
     public int getRedPoints() { return redPoints; }
 
-    private boolean moveChecker(Checker checker, int[] newCoor) {
-        int[] currCoor = board.getPosOfChecker(checker);
-        if(board.getSquareAt(newCoor).canMoveTo() && isLegalMove(checker, currCoor, newCoor)) {
-            tryForcedCapture(checker);
+    private boolean moveChecker(int[] currCoor, int[] newCoor) {
+        Checker checker = board.getSquareAt(currCoor).getChecker();
+        if(board.getSquareAt(newCoor).canMoveTo() && isLegalMove(currCoor, newCoor)) {
+            tryForcedCapture(currCoor);
             board.getSquareAt(currCoor).removeChecker();
             board.setPosOfChecker(checker, newCoor);
             return true;
-        } else if(isLegalJump(checker, currCoor, newCoor)) {
-            capture(checker, newCoor);
+        } else if(isLegalJump(currCoor, newCoor)) {
+            capture(currCoor, newCoor);
         }
         return false;
     }
 
-    private boolean isLegalJump(Checker checker, int[] currCoor, int[] newCoor) {
+    private boolean isLegalJump(int[] currCoor, int[] newCoor) {
+        Checker checker = board.getSquareAt(currCoor).getChecker();
         int[] proposedJumpCoor = new int[]{newCoor[0] - currCoor[0], newCoor[1] - currCoor[1]};
         for (int[] jumpCoor : checker.getJumpCoors()) {
             if(Arrays.equals(jumpCoor, proposedJumpCoor)) {
@@ -62,15 +63,15 @@ public class Game {
         return false;
     }
 
-    private boolean tryForcedCapture(Checker checker) {
-        int[] currCoor = board.getPosOfChecker(checker);
+    private boolean tryForcedCapture(int[] currCoor) {
+        Checker checker = board.getSquareAt(currCoor).getChecker();
         if(checker == null) { return false; }
         for (int[] jumpCoor : checker.getJumpCoors()) {
             int[] newCoor = new int[]{currCoor[0] + jumpCoor[0], currCoor[1] + jumpCoor[1]};
             if ((newCoor[0] >= 0 && newCoor[0] < board.getSize() - 1) && (newCoor[1] >= 0 && newCoor[1] < board.getSize() - 1)) {
-                if(isLegalJump(checker, currCoor, newCoor)) {
+                if(isLegalJump(currCoor, newCoor)) {
                     System.out.println("FORCED CAPTURE");
-                    capture(checker, newCoor);
+                    capture(currCoor, newCoor);
                     return true;
                 }
             }
@@ -78,8 +79,8 @@ public class Game {
         return false;
     }
 
-    private void capture(Checker checker, int[] newCoor) {
-        int[] currCoor = board.getPosOfChecker(checker);
+    private void capture(int[] currCoor, int[] newCoor) {
+        Checker checker = board.getSquareAt(currCoor).getChecker();
         board.getSquareAt(currCoor).removeChecker();
         board.setPosOfChecker(checker, newCoor);
         int[] midCoor = new int[]{(currCoor[0] + newCoor[0])/2, (currCoor[1] + newCoor[1])/2};
@@ -89,7 +90,8 @@ public class Game {
         else if (checker.getColour().equals("red")) { redPoints++; }
     }
 
-    private boolean isLegalMove(Checker checker, int[] currCoor, int[] newCoor) {
+    private boolean isLegalMove(int[] currCoor, int[] newCoor) {
+        Checker checker = board.getSquareAt(currCoor).getChecker();
         int[] proposedMoveCoor = new int[]{newCoor[0] - currCoor[0], newCoor[1] - currCoor[1]};
         for (int[] moveCoor : checker.getMoveCoors()) {
             if(Arrays.equals(moveCoor, proposedMoveCoor)) { return true; }
@@ -99,14 +101,13 @@ public class Game {
 
     public static void main(String[] args) {
         Game g = new Game(8, 12);
-        System.out.println(g.moveChecker(g.getBoard().getSquareAt(new int[]{2, 0}).getChecker(), new int[]{3, 1}));
+        System.out.println(g.moveChecker(new int[]{2, 0}, new int[]{3, 1}));
         g.getBoard().displayBoardAsString();
 
-        System.out.println(g.moveChecker(g.getBoard().getSquareAt(new int[]{5, 3}).getChecker(), new int[]{4, 2}));
+        System.out.println(g.moveChecker(new int[]{5, 3}, new int[]{4, 2}));
         g.getBoard().displayBoardAsString();
 
-        g.tryForcedCapture(g.getBoard().getSquareAt(new int[]{4, 2}).getChecker());
+        g.tryForcedCapture(new int[]{4, 2});
         g.getBoard().displayBoardAsString();
-        //System.out.println("IS MOVE CAPTURING? " + g.isCapturingMove(g.getBoard().getSquareAt(new int[]{3, 1}).getChecker(), new int[]{5, 3}));
     }
 }
