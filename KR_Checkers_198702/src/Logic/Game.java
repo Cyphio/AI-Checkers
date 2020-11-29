@@ -16,14 +16,14 @@ public class Game {
     private int blackPoints;
     private int redPoints;
 
-    public Game(int board_size, int n_checkers) {
-        board = new GameBoard(board_size);
+    public Game(int boardSize, int nCheckers) {
+        board = new GameBoard(boardSize);
         blackPoints = 0;
         redPoints = 0;
 
         blacks = new ArrayList<>();
         reds = new ArrayList<>();
-        for(int i=0; i<n_checkers; i++) {
+        for(int i=0; i<nCheckers; i++) {
             blacks.add(new BlackChecker());
             reds.add(new RedChecker());
         }
@@ -37,7 +37,7 @@ public class Game {
 
     public int getRedPoints() { return redPoints; }
 
-    private boolean moveChecker(int[] currCoor, int[] newCoor) {
+    private boolean move(int[] currCoor, int[] newCoor) {
         Checker checker = board.getSquareAt(currCoor).getChecker();
         if(board.getSquareAt(newCoor).canMoveTo() && isLegalMove(currCoor, newCoor)) {
             tryForcedCapture(currCoor);
@@ -101,10 +101,10 @@ public class Game {
 
     public static void main(String[] args) {
         Game g = new Game(8, 12);
-        System.out.println(g.moveChecker(new int[]{2, 0}, new int[]{3, 1}));
+        System.out.println(g.move(new int[]{2, 0}, new int[]{3, 1}));
         g.getBoard().displayBoardAsString();
 
-        System.out.println(g.moveChecker(new int[]{5, 3}, new int[]{4, 2}));
+        System.out.println(g.move(new int[]{5, 3}, new int[]{4, 2}));
         g.getBoard().displayBoardAsString();
 
         g.tryForcedCapture(new int[]{4, 2});
