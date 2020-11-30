@@ -2,6 +2,7 @@ package CMD;
 
 import Logic.Game;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 /**
  * @author ianw
@@ -40,38 +41,31 @@ public class Parser {
             } else {
                 switch (cw) {
                     case NEW:
-                        int boardSize = 8;
-                        int nCheckers = 12;
-                        if (scanner.hasNextInt()) {
-                            int value = scanner.nextInt();
-                            return new Command(cw, value);
+//                        int[] vars = new int[2];
+//                        for(int i=0; i<vars.length; i++) {
+//                            System.out.println("Enter")
+//                        }
+//                        if (scanner.hasNextInt() {
+//                        int value = scanner.nextInt();
+                        return new Command(cw, 8, 12);
+                    case MOVE:
+//                        if (scanner.hasNextInt()) {
+//                            int row = scanner.nextInt();
+//                            if (scanner.hasNextInt()) {
+//                                int col = scanner.nextInt();
+//                                return new Command(cw, row, col);
+//                            }
+//                        }
+                        Pattern pattern = Pattern.compile("[0-9][0-9]");
+                        if(!scanner.hasNext(pattern)) { break; }
+                        int[] coor = new int[2];
+                        for(int i=0; i<2; i++) {
+                            coor[i] = scanner.nextInt();
                         }
-                        break;
-                    case CLEAR:
-                        if (scanner.hasNextInt()) {
-                            int row = scanner.nextInt();
-                            if (scanner.hasNextInt()) {
-                                int col = scanner.nextInt();
-                                return new Command(cw, row, col);
-                            }
-                        }
-                        break;
-                    case MARK:
-                        if (scanner.hasNextInt()) {
-                            int row = scanner.nextInt();
-                            if (scanner.hasNextInt()) {
-                                int col = scanner.nextInt();
-                                if (scanner.hasNextInt()) {
-                                    int value = scanner.nextInt();
-                                    return new Command(cw, row, col, value);
-                                }
-
-                            }
-                        }
-                        break;
+                        return new Command(cw, coor);
                 }
             }
-            return new Command(CommandWord.UNKNOWN, cw.getWord() + "  probable insufficient argument");
+            return new Command(CommandWord.UNKNOWN, "Probable insufficient argument: " + cw.getWord());
         }
         return new Command(CommandWord.UNKNOWN,  "Please tell me what to do");
     }
@@ -79,10 +73,11 @@ public class Parser {
     public static void main(String args[]) {
         Parser p = new Parser();
         Command c = null;
-        System.out.print("Enter a command>");
-        while ((c = p.getCommand()) != null && c.getCommand() != CommandWord.QUIT) {
-            System.out.println(c);
-            System.out.print(">");
+        System.out.print("Enter a command> ");
+        while ((c = p.getCommand()) != null) {
+            System.out.println(c.getMsg());
+            if(c.getCommand() == CommandWord.QUIT) { break; }
+            System.out.print("> ");
         }
     }
 }
