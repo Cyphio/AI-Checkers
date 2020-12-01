@@ -11,12 +11,14 @@ import java.util.Arrays;
 public class Game {
 
     private GameBoard board;
+    private int nCheckers;
     private ArrayList<Checker> blacks;
     private ArrayList<Checker> reds;
     private int blackPoints;
     private int redPoints;
 
     public Game(int boardSize, int nCheckers) {
+        this.nCheckers = nCheckers;
         board = new GameBoard(boardSize);
         blackPoints = 0;
         redPoints = 0;
@@ -37,7 +39,7 @@ public class Game {
 
     public int getRedPoints() { return redPoints; }
 
-    private boolean move(int[] currCoor, int[] newCoor) {
+    public boolean move(int[] currCoor, int[] newCoor) {
         Checker checker = board.getSquareAt(currCoor).getChecker();
         if(board.getSquareAt(newCoor).canMoveTo() && isLegalMove(currCoor, newCoor)) {
             tryForcedCapture(currCoor);
@@ -97,6 +99,10 @@ public class Game {
             if(Arrays.equals(moveCoor, proposedMoveCoor)) { return true; }
         }
         return false;
+    }
+
+    public boolean isComplete() {
+        return blackPoints == nCheckers || redPoints == nCheckers;
     }
 
     public static void main(String[] args) {

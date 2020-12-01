@@ -2,15 +2,7 @@ package CMD;
 
 import Logic.Game;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
-/**
- * @author ianw
- *
- * A very simple input line parser that parses each line written by the user to
- * the console. To use, create an object of this type, and then repeatedly call
- * getCommand.
- */
 public class Parser {
 
     private Scanner input;
@@ -21,12 +13,6 @@ public class Parser {
         game = new Game(8, 12);
     }
 
-    /**
-     * Parse the input line, converting the first word encountered into a
-     * command, and then passing any further arguments that make sense.
-     *
-     * @return the parsed command
-     */
     public Command getCommand() {
         String inputLine = "";
         inputLine = input.nextLine();
@@ -41,28 +27,32 @@ public class Parser {
             } else {
                 switch (cw) {
                     case NEW:
-//                        int[] vars = new int[2];
-//                        for(int i=0; i<vars.length; i++) {
-//                            System.out.println("Enter")
-//                        }
-//                        if (scanner.hasNextInt() {
-//                        int value = scanner.nextInt();
-                        return new Command(cw, 8, 12);
-                    case MOVE:
-//                        if (scanner.hasNextInt()) {
-//                            int row = scanner.nextInt();
-//                            if (scanner.hasNextInt()) {
-//                                int col = scanner.nextInt();
-//                                return new Command(cw, row, col);
-//                            }
-//                        }
-                        Pattern pattern = Pattern.compile("[0-9][0-9]");
-                        if(!scanner.hasNext(pattern)) { break; }
-                        int[] coor = new int[2];
-                        for(int i=0; i<2; i++) {
-                            coor[i] = scanner.nextInt();
+                        try {
+                            int[] args = new int[2];
+                            for(int i=0; i<2; i++) {
+                                args[i] = scanner.nextInt();
+                            }
+                            return new Command(cw, args[0], args[1]);
+                        } catch(Exception e) {
+                            e.getMessage();
                         }
-                        return new Command(cw, coor);
+                        break;
+                    case MOVE:
+                        try {
+                            int[] currCoor = new int[2];
+                            int[] newCoor = new int[2];
+                            for(int i=0; i<2; i++) {
+                                currCoor[i] = scanner.nextInt();
+                            }
+                            for(int i=0; i<2; i++) {
+                                newCoor[i] = scanner.nextInt();
+                            }
+                            return new Command(cw, currCoor, newCoor);
+                        } catch(Exception e) {
+                            e.getMessage();
+                        }
+                        break;
+
                 }
             }
             return new Command(CommandWord.UNKNOWN, "Probable insufficient argument: " + cw.getWord());
