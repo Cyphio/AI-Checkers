@@ -14,6 +14,7 @@ public class Game {
     private int nCheckers;
     private ArrayList<Checker> blacks;
     private ArrayList<Checker> reds;
+    private Checker currPlayer;
     private int blackPoints;
     private int redPoints;
 
@@ -22,14 +23,12 @@ public class Game {
         board = new GameBoard(boardSize);
         blackPoints = 0;
         redPoints = 0;
-
         blacks = new ArrayList<>();
         reds = new ArrayList<>();
         for(int i=0; i<nCheckers; i++) {
             blacks.add(new BlackChecker());
             reds.add(new RedChecker());
         }
-
         board.setUpCheckers(blacks, reds);
     }
 

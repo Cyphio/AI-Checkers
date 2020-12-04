@@ -1,17 +1,20 @@
 package UI;
 
 import Logic.Game;
+import Logic.ResourceManager;
 import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
+import jfxtras.labs.scene.layout.ScalableContentPane;
+import jfxtras.labs.util.event.MouseControlUtil;
 
 public class CheckersGUI extends Application {
 
@@ -24,37 +27,75 @@ public class CheckersGUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.window = primaryStage;
-        window.setTitle("Checkers Main Menu");
-        grid = new GridPane();
-        grid.setPadding(new Insets(25, 25, 25, 25));
-        grid.setAlignment(Pos.CENTER);
+
+        ScalableContentPane scaledPane = new ScalableContentPane();
+        Pane root = scaledPane.getContentPane();
+
+        Shape shape = new Rectangle(50, 50);
+        shape.setStroke(Color.WHITE);
+
+        MouseControlUtil.makeDraggable(shape);
+
+        root.getChildren().add(shape);
+
+
+        Label boardSizeMsg = new Label("Board size: ");
+        ChoiceBox<String> boardSize = new ChoiceBox<>();
+        boardSize.getItems().addAll("7", "8", "9", "10");
+        boardSize.setValue("8");
+
+        Label nCheckersMsg = new Label("Number of chekers: ");
+        ChoiceBox<String> nCheckers = new ChoiceBox<>();
+        nCheckers.getItems().addAll("10", "12", "14", "14");
+        nCheckers.setValue("12");
+
+        Label difficultyMsg = new Label("Difficulty: ");
+        ChoiceBox<String> difficulty = new ChoiceBox<>();
+        difficulty.getItems().addAll("Easy", "Regular", "Hard");
+        difficulty.setValue("Regular");
+
+        createGame(8, 12, "Regular");
 
         Button generateNewGame = new Button("Generate Game");
         generateNewGame.setOnAction(e -> {
-            createGame();
+            createGame(Integer.valueOf(boardSize.getValue()), Integer.valueOf(nCheckers.getValue()), difficulty.getValue());
         });
 
-        Button load = new Button ("Load");
+        Button save = new Button("Save");
+        save.setOnAction(e -> {
+            try {
+                ResourceManager.save(this.game, "a.save");
+            } catch (Exception error) {
+                System.out.println("Couldn't save: " + error.getMessage());
+            }
+        });
+
+        Button load = new Button("Load");
         load.setOnAction(e -> {
+            try {
+                Game data = (Game) ResourceManager.load("a.save");
+                this.game = data;
+                displayGame();
+                interact();
+
+            } catch (Exception error) {
+                System.out.println("Couldn't load: " + error.getMessage());
+            }
         });
 
-        HBox h = new HBox();
-        h.setAlignment(Pos.CENTER);
-        h.setSpacing(5);
-        h.getChildren().addAll(generateNewGame, load);
-
-        VBox v = new VBox();
-        v.setPadding(new Insets(25, 25, 25, 25));
-        v.setAlignment(Pos.CENTER);
-        v.getChildren().addAll(h, grid);
-
-        window.setScene(new Scene(v, 750, 750));
+        Scene scene = new Scene(scaledPane, 400, 400);
+        window.setTitle("Checkers");
+        window.setScene(scene);
         window.show();
     }
 
-    private void createGame() {
-        game = new Game(8, 12);
+    private void createGame(int boardSize, int nCheckers, String difficulty) {
+        game = new Game(boardSize, nCheckers);
     }
+
+    public void interact() { }
+
+    public void displayGame() { }
 
     public static void main(String[] args) {
         launch(args);
