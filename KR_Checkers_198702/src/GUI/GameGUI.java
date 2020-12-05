@@ -14,6 +14,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 public class GameGUI extends Application {
 
     public static final int squareSize = 100;
@@ -24,7 +26,7 @@ public class GameGUI extends Application {
     private Group checkerGroup = new Group();
     private Group buttonGroup = new Group();
 
-    private Game game;
+    private Game game = null;
 
     @Override
     public void start(Stage primaryStage) {
@@ -84,7 +86,6 @@ public class GameGUI extends Application {
     private Parent createGame(int boardSize) {
         this.width = boardSize;
         this.height = boardSize;
-        game = new Game(boardSize, boardSize/2);
 
         Button save = new Button("Save");
         save.setOnAction(e -> {
@@ -98,19 +99,26 @@ public class GameGUI extends Application {
         Pane board = new Pane();
         board.setPrefSize(width * squareSize, height * squareSize);
         board.getChildren().addAll(squareGroup, checkerGroup);
+        ArrayList<Checker> reds = new ArrayList();
+        ArrayList<Checker> blacks = new ArrayList();
         for(int i=0; i<height; i++) {
             for(int j=0; j<width; j++) {
                 if((i+j)%2 == 0) {  squareGroup.getChildren().add(new WhiteSquare(new int[]{i, j})); }
                 else { squareGroup.getChildren().add(new BlackSquare(new int[]{i, j})); }
-//                if(j <= 2 && (i+j)%2 != 0) { checkerGroup.getChildren().add(new RedChecker(new int[]{i, j}, 0.4)); }
-//                else if(j >= 5 && (i+j)%2 != 0) { checkerGroup.getChildren().add(new BlackChecker(new int[]{i, j}, 0.4)); }
+                if(j <= 2 && (i+j)%2 != 0) {
+                    Checker red = new RedChecker(new int[]{i, j}, 0.4);
+                    reds.add(red);
+                    checkerGroup.getChildren().add(red);
+                }
+                else if(j >= 5 && (i+j)%2 != 0) {
+                    Checker black = new BlackChecker(new int[]{i, j}, 0.4);
+                    blacks.add(black);
+                    checkerGroup.getChildren().add(black);
+                }
             }
         }
-        for(int i=0; i<game.getReds().size(); i+=) {
-            Checker red = game.getReds().get(i);
 
-
-        }
+        game = new Game(boardSize, reds, blacks);
 
         HBox h = new HBox();
         h.setPadding(new Insets(0, 25, 25, 25));

@@ -9,25 +9,38 @@ import static GUI.GameGUI.squareSize;
 public abstract class Checker extends StackPane {
 
     Color colour;
-    double size;
+    int[] currCoor;
     boolean isKing;
     int[][] moveCoors;
     int[][] jumpCoors;
     int[][] kingMoveCoors = new int[][]{{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
     int[][] kingJumpCoors = new int[][]{{-2, -2}, {-2, 2}, {2, -2}, {-2, -2}};
 
-    public abstract Color getColour();
+    public Color getColour() { return colour; }
 
-    public abstract void setKing();
+    public int[] getCurrCoor() {
+        return currCoor;
+    }
 
-    public abstract boolean getKing();
+    public int[][] getMoveCoors() {
+        if(isKing) { return kingMoveCoors; }
+        else { return moveCoors; }
+    }
 
-    public abstract int[][] getMoveCoors();
+    public int[][] getJumpCoors() {
+        if(isKing) { return kingJumpCoors; }
+        else { return jumpCoors; }
+    }
 
-    public abstract  int[][] getJumpCoors();
+    public void setKing() {
+        isKing = true;
+    }
+
+    public boolean getKing() {
+        return isKing;
+    }
 
     public void create(Color mainColour, Color secColour, int[] coor, double size) {
-        this.size = size;
         colour = mainColour;
         relocate(coor[0] * squareSize, coor[1] * squareSize);
 
