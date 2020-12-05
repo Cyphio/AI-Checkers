@@ -1,6 +1,6 @@
 package CMD;
 
-import Logic.Game;
+import GUI.Game;
 import java.util.Scanner;
 
 public class Parser {

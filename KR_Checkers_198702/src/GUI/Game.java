@@ -1,9 +1,4 @@
-package Logic;
-
-import Logic.Checkers.Checker;
-import Logic.Checkers.RedChecker;
-import Logic.Checkers.BlackChecker;
-import Logic.Squares.Square;
+package GUI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +28,14 @@ public class Game {
     }
 
     public GameBoard getBoard() { return board; }
+
+    public ArrayList<Checker> getBlacks() {
+        return blacks;
+    }
+
+    public ArrayList<Checker> getReds() {
+        return reds;
+    }
 
     public int getBlackPoints() { return blackPoints; }
 

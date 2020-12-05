@@ -1,4 +1,4 @@
-package UI;
+package GUI;
 
 import Logic.Checkers.Checker;
 import javafx.scene.paint.Color;

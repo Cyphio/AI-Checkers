@@ -1,16 +1,18 @@
-package Logic.Checkers;
+package GUI;
+
+import javafx.scene.paint.Color;
 
 public class RedChecker extends Checker {
 
-    public RedChecker() {
-        this.colour = "red";
-        this.isKing = false;
-        this.moveCoors = new int[][]{{-1, -1}, {-1, 1}};
-        this.jumpCoors = new int[][]{{-2, -2}, {-2, 2}};
+    public RedChecker(int[] coor, double size) {
+        create(Color.RED, Color.WHITE, coor, size);
+        isKing = false;
+        moveCoors = new int[][]{{-1, -1}, {-1, 1}};
+        jumpCoors = new int[][]{{-2, -2}, {-2, 2}};
     }
 
     @Override
-    public String getColour() { return colour; }
+    public Color getColour() { return colour; }
 
     @Override
     public void setKing() {

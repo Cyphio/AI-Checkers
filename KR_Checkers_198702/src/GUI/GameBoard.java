@@ -1,9 +1,4 @@
-package Logic;
-
-import Logic.Checkers.Checker;
-import Logic.Squares.BlackSquare;
-import Logic.Squares.Square;
-import Logic.Squares.WhiteSquare;
+package GUI;
 
 import java.util.ArrayList;
 

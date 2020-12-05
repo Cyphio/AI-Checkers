@@ -1,12 +1,12 @@
-package UI;
+package GUI;
 
 import Logic.Checkers.Checker;
 import javafx.scene.paint.Color;
 
-public class BlackSquare extends Square {
+public class WhiteSquare extends Square {
 
-    public BlackSquare(int[] coor) {
-        colour = Color.BLACK;
+    public WhiteSquare(int[] coor) {
+        colour = Color.WHITE;
         this.setFill(colour);
         this.setWidth(GameGUI.squareSize);
         this.setHeight(GameGUI.squareSize);
@@ -21,23 +21,21 @@ public class BlackSquare extends Square {
 
     @Override
     public boolean setChecker(Checker checker) {
-        this.checker = checker;
-        return true;
+        return false;
     }
 
     @Override
     public boolean removeChecker() {
-        checker = null;
-        return true;
+        return false;
     }
 
     @Override
     public Checker getChecker() {
-        return checker;
+        return null;
     }
 
     @Override
     public boolean canMoveTo() {
-        return true;
+        return false;
     }
 }
