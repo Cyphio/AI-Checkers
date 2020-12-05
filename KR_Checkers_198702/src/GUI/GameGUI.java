@@ -33,13 +33,17 @@ public class GameGUI extends Application {
     private Group buttonGroup = new Group();
 
     private GameLogic gameLogic = null;
+    private ArrayList<Checker> rCheckers = new ArrayList();
+    private ArrayList<Checker> bCheckers = new ArrayList();
+    private ArrayList<Square> wSquares = new ArrayList();
+    private ArrayList<Square> bSquares = new ArrayList();
 
     @Override
     public void start(Stage primaryStage) {
 
         Label boardSizeMsg = new Label("Board size: ");
         ChoiceBox<String> boardSize = new ChoiceBox<>();
-        boardSize.getItems().addAll("7", "8", "9", "10");
+        boardSize.getItems().addAll("6", "8", "10");
         boardSize.setValue("8");
 
         Label difficultyMsg = new Label("Difficulty: ");
@@ -65,6 +69,7 @@ public class GameGUI extends Application {
             Scene scene = new Scene(createGameContent(Integer.valueOf(boardSize.getValue()))) ;
             primaryStage.setTitle("Checkers");
             primaryStage.setScene(scene);
+            primaryStage.setMaximized(true);
             primaryStage.show();
         });
 
@@ -105,10 +110,6 @@ public class GameGUI extends Application {
         Pane board = new Pane();
         board.setPrefSize(width * squareSize, height * squareSize);
         board.getChildren().addAll(squareGroup, checkerGroup);
-        ArrayList<Checker> rCheckers = new ArrayList();
-        ArrayList<Checker> bCheckers = new ArrayList();
-        ArrayList<Square> wSquares = new ArrayList();
-        ArrayList<Square> bSquares = new ArrayList();
         for(int i=0; i<height; i++) {
             for(int j=0; j<width; j++) {
                 if((i+j)%2 == 0) {
@@ -121,12 +122,12 @@ public class GameGUI extends Application {
                     bSquares.add(black);
                     squareGroup.getChildren().add(black);
                 }
-                if(j <= 2 && (i+j)%2 != 0) {
+                if(j <= (boardSize/2)-2 && (i+j)%2 != 0) {
                     Checker red = new RedChecker(new int[]{i, j}, 0.4);
                     rCheckers.add(red);
                     checkerGroup.getChildren().add(red);
                 }
-                else if(j >= 5 && (i+j)%2 != 0) {
+                else if(j >= (boardSize/2)+1 && (i+j)%2 != 0) {
                     Checker black = new BlackChecker(new int[]{i, j}, 0.4);
                     bCheckers.add(black);
                     checkerGroup.getChildren().add(black);

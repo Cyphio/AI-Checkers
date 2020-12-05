@@ -1,6 +1,7 @@
 package GUI.CHECKERS;
 
 import javafx.scene.paint.Color;
+import jfxtras.labs.util.event.MouseControlUtil;
 
 public class RedChecker extends Checker {
 
@@ -10,5 +11,6 @@ public class RedChecker extends Checker {
         isKing = false;
         moveCoors = new int[][]{{-1, -1}, {-1, 1}};
         jumpCoors = new int[][]{{-2, -2}, {-2, 2}};
+        MouseControlUtil.makeDraggable(this);
     }
 }
