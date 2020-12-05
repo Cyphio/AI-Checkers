@@ -1,4 +1,4 @@
-package GUI;
+package GUI.CHECKERS;
 
 import javafx.scene.paint.Color;
 

@@ -18,7 +18,7 @@ public class ResourceManager {
      * @param fileName the desired name of the save file.
      * @throws Exception
      */
-    public static void save(Game data, String fileName) throws Exception {
+    public static void save(GameLogic data, String fileName) throws Exception {
         try {
             ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fileName));
             os.writeObject(data);
@@ -33,10 +33,10 @@ public class ResourceManager {
      * @return the Game object.
      * @throws Exception
      */
-    public static Game load(String fileName) throws Exception {
+    public static GameLogic load(String fileName) throws Exception {
         try {
             ObjectInputStream is = new ObjectInputStream(new FileInputStream(fileName));
-            Game data = (Game) is.readObject();
+            GameLogic data = (GameLogic) is.readObject();
             return data;
         } catch (Exception error) {
             return null;

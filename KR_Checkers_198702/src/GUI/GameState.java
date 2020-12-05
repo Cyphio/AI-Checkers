@@ -1,5 +1,8 @@
 package GUI;
 
+import GUI.CHECKERS.Checker;
+import GUI.SQUARES.Square;
+
 import java.util.ArrayList;
 
 public class GameState {

@@ -1,5 +1,11 @@
 package GUI;
 
+import GUI.CHECKERS.BlackChecker;
+import GUI.CHECKERS.Checker;
+import GUI.CHECKERS.RedChecker;
+import GUI.SQUARES.BlackSquare;
+import GUI.SQUARES.Square;
+import GUI.SQUARES.WhiteSquare;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,7 +32,7 @@ public class GameGUI extends Application {
     private Group checkerGroup = new Group();
     private Group buttonGroup = new Group();
 
-    private Game game = null;
+    private GameLogic gameLogic = null;
 
     @Override
     public void start(Stage primaryStage) {
@@ -44,8 +50,8 @@ public class GameGUI extends Application {
         Button load = new Button("Load");
         load.setOnAction(e -> {
             try {
-                Game data = (Game) ResourceManager.load("a.save");
-                this.game = data;
+                GameLogic data = (GameLogic) ResourceManager.load("a.save");
+                this.gameLogic = data;
 //                displayGame();
 //                interact();
 
@@ -56,7 +62,7 @@ public class GameGUI extends Application {
 
         Button generateNewGame = new Button("Generate Game");
         generateNewGame.setOnAction(e -> {
-            Scene scene = new Scene(createGame(Integer.valueOf(boardSize.getValue()))) ;
+            Scene scene = new Scene(createGameContent(Integer.valueOf(boardSize.getValue()))) ;
             primaryStage.setTitle("Checkers");
             primaryStage.setScene(scene);
             primaryStage.show();
@@ -83,14 +89,14 @@ public class GameGUI extends Application {
         primaryStage.show();
     }
 
-    private Parent createGame(int boardSize) {
+    private Parent createGameContent(int boardSize) {
         this.width = boardSize;
         this.height = boardSize;
 
         Button save = new Button("Save");
         save.setOnAction(e -> {
             try {
-                ResourceManager.save(this.game, "a.save");
+                ResourceManager.save(this.gameLogic, "a.save");
             } catch (Exception error) {
                 System.out.println("Couldn't save: " + error.getMessage());
             }
@@ -128,7 +134,9 @@ public class GameGUI extends Application {
             }
         }
 
-        game = new Game(boardSize, rCheckers, bCheckers, wSquares, bSquares);
+        gameLogic = new GameLogic(boardSize, rCheckers, bCheckers, wSquares, bSquares);
+
+        System.out.println(gameLogic.getbCheckers().size());
 
         HBox h = new HBox();
         h.setPadding(new Insets(0, 25, 25, 25));

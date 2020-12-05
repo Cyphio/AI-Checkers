@@ -1,11 +1,13 @@
 package GUI;
 
+import GUI.CHECKERS.Checker;
+import GUI.SQUARES.Square;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Game {
+public class GameLogic {
 
     private final int boardSize;
     private ArrayList<Checker> rCheckers;
@@ -14,7 +16,7 @@ public class Game {
     private int redPoints;
     private GameState state;
 
-    public Game(int boardSize, ArrayList<Checker> rCheckers, ArrayList<Checker> bCheckers, ArrayList<Square> wSquares, ArrayList<Square> bSquares) {
+    public GameLogic(int boardSize, ArrayList<Checker> rCheckers, ArrayList<Checker> bCheckers, ArrayList<Square> wSquares, ArrayList<Square> bSquares) {
         this.boardSize = boardSize;
         blackPoints = 0;
         redPoints = 0;

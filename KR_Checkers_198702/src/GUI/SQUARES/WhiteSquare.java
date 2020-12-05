@@ -1,11 +1,12 @@
-package GUI;
+package GUI.SQUARES;
 
+import GUI.GameGUI;
 import javafx.scene.paint.Color;
 
-public class BlackSquare extends Square {
+public class WhiteSquare extends Square {
 
-    public BlackSquare(int[] coor) {
-        colour = Color.BLACK;
+    public WhiteSquare(int[] coor) {
+        colour = Color.WHITE;
         this.coor = coor;
         this.setFill(colour);
         this.setWidth(GameGUI.squareSize);
@@ -15,6 +16,6 @@ public class BlackSquare extends Square {
 
     @Override
     public boolean canMoveTo() {
-        return true;
+        return false;
     }
 }
