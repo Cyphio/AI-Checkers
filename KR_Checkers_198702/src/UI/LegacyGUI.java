@@ -10,13 +10,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 import jfxtras.labs.util.event.MouseControlUtil;
 
-public class CheckersGUI extends Application {
+public class LegacyGUI extends Application {
 
     private GridPane grid;
     private int boardSize;
@@ -31,13 +31,13 @@ public class CheckersGUI extends Application {
         ScalableContentPane scaledPane = new ScalableContentPane();
         Pane root = scaledPane.getContentPane();
 
-        Shape shape = new Rectangle(50, 50);
+        Shape shape = new Circle(25);
+        shape.setFill(Color.RED);
         shape.setStroke(Color.WHITE);
 
         MouseControlUtil.makeDraggable(shape);
 
         root.getChildren().add(shape);
-
 
         Label boardSizeMsg = new Label("Board size: ");
         ChoiceBox<String> boardSize = new ChoiceBox<>();
@@ -83,7 +83,7 @@ public class CheckersGUI extends Application {
             }
         });
 
-        Scene scene = new Scene(scaledPane, 400, 400);
+        Scene scene = new Scene(scaledPane, 800, 800);
         window.setTitle("Checkers");
         window.setScene(scene);
         window.show();
