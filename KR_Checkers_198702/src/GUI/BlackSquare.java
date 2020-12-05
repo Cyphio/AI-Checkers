@@ -6,6 +6,7 @@ public class BlackSquare extends Square {
 
     public BlackSquare(int[] coor) {
         colour = Color.BLACK;
+        this.coor = coor;
         this.setFill(colour);
         this.setWidth(GameGUI.squareSize);
         this.setHeight(GameGUI.squareSize);

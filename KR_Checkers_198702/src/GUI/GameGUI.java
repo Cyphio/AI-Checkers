@@ -99,26 +99,36 @@ public class GameGUI extends Application {
         Pane board = new Pane();
         board.setPrefSize(width * squareSize, height * squareSize);
         board.getChildren().addAll(squareGroup, checkerGroup);
-        ArrayList<Checker> reds = new ArrayList();
-        ArrayList<Checker> blacks = new ArrayList();
+        ArrayList<Checker> rCheckers = new ArrayList();
+        ArrayList<Checker> bCheckers = new ArrayList();
+        ArrayList<Square> wSquares = new ArrayList();
+        ArrayList<Square> bSquares = new ArrayList();
         for(int i=0; i<height; i++) {
             for(int j=0; j<width; j++) {
-                if((i+j)%2 == 0) {  squareGroup.getChildren().add(new WhiteSquare(new int[]{i, j})); }
-                else { squareGroup.getChildren().add(new BlackSquare(new int[]{i, j})); }
+                if((i+j)%2 == 0) {
+                    Square white = new WhiteSquare(new int[]{i, j});
+                    wSquares.add(white);
+                    squareGroup.getChildren().add(white);
+                }
+                else {
+                    Square black = new BlackSquare(new int[]{i, j});
+                    bSquares.add(black);
+                    squareGroup.getChildren().add(black);
+                }
                 if(j <= 2 && (i+j)%2 != 0) {
                     Checker red = new RedChecker(new int[]{i, j}, 0.4);
-                    reds.add(red);
+                    rCheckers.add(red);
                     checkerGroup.getChildren().add(red);
                 }
                 else if(j >= 5 && (i+j)%2 != 0) {
                     Checker black = new BlackChecker(new int[]{i, j}, 0.4);
-                    blacks.add(black);
+                    bCheckers.add(black);
                     checkerGroup.getChildren().add(black);
                 }
             }
         }
 
-        game = new Game(boardSize, reds, blacks);
+        game = new Game(boardSize, rCheckers, bCheckers, wSquares, bSquares);
 
         HBox h = new HBox();
         h.setPadding(new Insets(0, 25, 25, 25));

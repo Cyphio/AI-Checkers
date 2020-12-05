@@ -22,6 +22,10 @@ public abstract class Checker extends StackPane {
         return currCoor;
     }
 
+    public void setCurrCoor(int[] coor) {
+        currCoor = coor;
+    }
+
     public int[][] getMoveCoors() {
         if(isKing) { return kingMoveCoors; }
         else { return moveCoors; }
