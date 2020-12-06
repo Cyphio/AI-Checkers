@@ -9,7 +9,7 @@ import static GUI.GameGUI.squareSize;
 
 public class Checker extends StackPane {
 
-    private Type type;
+    private CheckerType type;
     private Color colour;
     private int[] currCoor;
     private boolean isKing;
@@ -18,7 +18,7 @@ public class Checker extends StackPane {
     private int[][] kingMoveCoors;
     private int[][] kingJumpCoors;
 
-    public Checker(Type type, int[] coor, double size) {
+    public Checker(CheckerType type, int[] coor, double size) {
         this.type = type;
         currCoor = coor;
         isKing = false;
@@ -26,12 +26,12 @@ public class Checker extends StackPane {
         kingMoveCoors = new int[][]{{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
         kingJumpCoors = new int[][]{{-2, -2}, {-2, 2}, {2, -2}, {-2, -2}};
 
-        if(type == Type.RED) {
+        if(type == CheckerType.RED) {
             create(Color.RED, Color.WHITE, coor, size);
             moveCoors = new int[][]{{-1, -1}, {-1, 1}};
             jumpCoors = new int[][]{{-2, -2}, {-2, 2}};
         }
-        if(type == Type.BLACK) {
+        if(type == CheckerType.BLACK) {
             create(Color.BLACK, Color.WHITE, coor, size);
             moveCoors = new int[][]{{1, -1}, {1, 1}};
             jumpCoors = new int[][]{{2, -2}, {2, 2}};

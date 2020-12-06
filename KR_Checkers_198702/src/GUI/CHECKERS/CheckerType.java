@@ -1,5 +1,5 @@
 package GUI.CHECKERS;
 
-public enum Type {
+public enum CheckerType {
     RED, BLACK;
 }

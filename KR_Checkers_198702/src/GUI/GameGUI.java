@@ -1,7 +1,7 @@
 package GUI;
 
 import GUI.CHECKERS.Checker;
-import GUI.CHECKERS.Type;
+import GUI.CHECKERS.CheckerType;
 import GUI.SQUARES.BlackSquare;
 import GUI.SQUARES.Square;
 import GUI.SQUARES.WhiteSquare;
@@ -122,12 +122,12 @@ public class GameGUI extends Application {
                     squareGroup.getChildren().add(black);
                 }
                 if(j <= (boardSize/2)-2 && (i+j)%2 != 0) {
-                    Checker red = InitChecker(Type.RED, new int[]{i, j}, 0.4);
+                    Checker red = InitChecker(CheckerType.RED, new int[]{i, j}, 0.4);
                     rCheckers.add(red);
                     checkerGroup.getChildren().add(red);
                 }
                 else if(j >= (boardSize/2)+1 && (i+j)%2 != 0) {
-                    Checker black = InitChecker(Type.BLACK, new int[]{i, j}, 0.4);
+                    Checker black = InitChecker(CheckerType.BLACK, new int[]{i, j}, 0.4);
                     bCheckers.add(black);
                     checkerGroup.getChildren().add(black);
                 }
@@ -152,8 +152,8 @@ public class GameGUI extends Application {
         return board;
     }
 
-    private Checker InitChecker(Type type, int[] coor, double size) {
-        Checker checker = new Checker(type, coor, 0.4);
+    private Checker InitChecker(CheckerType type, int[] coor, double size) {
+        Checker checker = new Checker(type, coor, size);
         checker.setOnMouseReleased(e -> {
             int[] newCoor = new int[]{
                     (int) (checker.getLayoutX() + squareSize / 2) / squareSize,
