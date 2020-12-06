@@ -3,11 +3,13 @@ package GUI.CHECKERS;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
+import jfxtras.labs.util.event.MouseControlUtil;
 
 import static GUI.GameGUI.squareSize;
 
-public abstract class Checker extends StackPane {
+public class Checker extends StackPane {
 
+    Type type;
     Color colour;
     int[] currCoor;
     boolean isKing;
@@ -15,6 +17,24 @@ public abstract class Checker extends StackPane {
     int[][] jumpCoors;
     int[][] kingMoveCoors = new int[][]{{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
     int[][] kingJumpCoors = new int[][]{{-2, -2}, {-2, 2}, {2, -2}, {-2, -2}};
+
+    public Checker(Type type, int[] coor, double size) {
+        this.type = type;
+        currCoor = coor;
+        isKing = false;
+        MouseControlUtil.makeDraggable(this);
+
+        if(type == Type.RED) {
+            create(Color.RED, Color.WHITE, coor, size);
+            moveCoors = new int[][]{{-1, -1}, {-1, 1}};
+            jumpCoors = new int[][]{{-2, -2}, {-2, 2}};
+        }
+        if(type == Type.BLACK) {
+            create(Color.BLACK, Color.WHITE, coor, size);
+            moveCoors = new int[][]{{1, -1}, {1, 1}};
+            jumpCoors = new int[][]{{2, -2}, {2, 2}};
+        }
+    }
 
     public Color getColour() { return colour; }
 
@@ -51,10 +71,9 @@ public abstract class Checker extends StackPane {
         Ellipse piece = new Ellipse(squareSize*size, squareSize*size);
         piece.setFill(mainColour);
         piece.setStroke(secColour);
-        piece.setStrokeWidth(1);
+        piece.setStrokeWidth(3);
 
-        piece.setTranslateX((squareSize - squareSize * size * 2) / 2);
-        piece.setTranslateY((squareSize - squareSize * size * 2) / 2);
+        piece.relocate(coor[0] * squareSize, coor[1] * squareSize);
         getChildren().addAll(piece);
     }
 }
