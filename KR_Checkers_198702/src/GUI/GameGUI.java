@@ -156,19 +156,19 @@ public class GameGUI extends Application {
         Checker checker = new Checker(type, coor, 0.4);
         checker.setOnMouseReleased(e -> {
             int[] newCoor = new int[]{
-                    (int)(checker.getLayoutX() + squareSize / 2) / squareSize,
-                    (int)(checker.getLayoutY() + squareSize / 2) / squareSize};
-            try {
-                if(gameLogic.move(coor, newCoor)) {
-                    checker.relocate(newCoor[0] * squareSize, newCoor[1] * squareSize);
-                } else {
-                    checker.relocate(coor[0] * squareSize, coor[1] * squareSize);
-                }
-            } catch(Exception excp) {
-                excp.getMessage();
-            };
+                    (int) (checker.getLayoutX() + squareSize / 2) / squareSize,
+                    (int) (checker.getLayoutY() + squareSize / 2) / squareSize};
+            TryMove(checker, coor, newCoor);
         });
         return checker;
+    }
+
+    private void TryMove(Checker checker, int[] currCoor, int[] newCoor) {
+        if(gameLogic.move(currCoor, newCoor)) {
+            checker.relocate(newCoor[0] * squareSize, newCoor[1] * squareSize);
+        } else {
+            checker.relocate(currCoor[0] * squareSize, currCoor[1] * squareSize);
+        }
     }
 
     public static void main(String[] args) {
