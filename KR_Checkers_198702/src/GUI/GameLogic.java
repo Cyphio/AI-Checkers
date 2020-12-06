@@ -42,6 +42,7 @@ public class GameLogic {
             return true;
         } else if(isLegalJump(currCoor, newCoor)) {
             capture(currCoor, newCoor);
+            return true;
         }
         return false;
     }
