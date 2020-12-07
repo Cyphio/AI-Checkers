@@ -10,7 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -58,10 +58,8 @@ public class GameGUI extends Application {
 
         Button generateNewGame = new Button("Generate Game");
         generateNewGame.setOnAction(e -> {
-            Scene scene = new Scene(createGameContent(Integer.valueOf(boardSize.getValue())));
             primaryStage.setTitle("Checkers");
-            primaryStage.setScene(scene);
-            primaryStage.setMaximized(true);
+            primaryStage.setScene(new Scene(createGameContent(Integer.valueOf(boardSize.getValue()))));
             primaryStage.show();
         });
 
@@ -89,12 +87,13 @@ public class GameGUI extends Application {
     private Parent createGameContent(int boardSize) {
         this.WIDTH = boardSize;
         this.HEIGHT = boardSize;
+
         Label blackPointsMsg = new Label("Black player's points: ");
         blackPointsLabel = new Label("0");
         Label redPointsMsg = new Label("Red player's points: ");
         redPointsLabel = new Label("0");
 
-        StackPane board = new StackPane();
+        Pane board = new Pane();
         board.setPrefSize(WIDTH * SQUARESIZE, HEIGHT * SQUARESIZE);
 
         ArrayList<Checker> rCheckers = new ArrayList();
@@ -133,7 +132,7 @@ public class GameGUI extends Application {
         });
 
         HBox h1 = new HBox();
-        h1.setPadding(new Insets(0, 25, 25, 25));
+        h1.setPadding(new Insets(25, 25, 25, 25));
         h1.setAlignment(Pos.CENTER);
         h1.setSpacing(5);
         h1.getChildren().addAll(blackPointsMsg, blackPointsLabel);
@@ -151,7 +150,7 @@ public class GameGUI extends Application {
         v.getChildren().addAll(h1, h2, save);
 
         HBox h3 = new HBox();
-        h3.setPadding(new Insets(0, 25, 0, 25));
+        h3.setPadding(new Insets(25, 25, 25, 25));
         h3.setAlignment(Pos.CENTER);
         h3.setSpacing(5);
         h3.getChildren().addAll(board, v);

@@ -21,18 +21,21 @@ public class GameLogic {
 
     public boolean move(Checker checker, int[] newCoor) {
         int[] currCoor = checker.getCurrCoor();
-        if(state.getSquareAt(newCoor).canMoveTo()) {
-            if (isLegalMove(currCoor, newCoor)) {
-                state.removeCheckerAt(currCoor);
-                checker.setCurrCoor(newCoor);
-                state.update();
-                return true;
-            } if (isLegalJump(currCoor, newCoor)) {
-                capture(checker, newCoor);
-                state.update();
-                return true;
+        try {
+            if (state.getSquareAt(newCoor).canMoveTo()) {
+                if (isLegalMove(currCoor, newCoor)) {
+                    state.removeCheckerAt(currCoor);
+                    checker.setCurrCoor(newCoor);
+                    state.update();
+                    return true;
+                }
+                if (isLegalJump(currCoor, newCoor)) {
+                    capture(checker, newCoor);
+                    state.update();
+                    return true;
+                }
             }
-        }
+        } catch (Exception e) { e.getMessage(); }
         return false;
     }
 

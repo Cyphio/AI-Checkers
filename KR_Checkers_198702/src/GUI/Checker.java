@@ -71,12 +71,15 @@ public class Checker extends StackPane {
         colour = mainColour;
         currCoor = coor;
 
-        relocate(currCoor[0] * SQUARESIZE, currCoor[1] * SQUARESIZE);
+        relocate(SQUARESIZE + SQUARESIZE / 2, SQUARESIZE + SQUARESIZE / 2);
 
         Ellipse piece = new Ellipse(SQUARESIZE * size, SQUARESIZE * size);
         piece.setFill(mainColour);
         piece.setStroke(secColour);
         piece.setStrokeWidth(3);
+
+        piece.setTranslateX((SQUARESIZE - SQUARESIZE * size * 2) / 2);
+        piece.setTranslateY((SQUARESIZE - SQUARESIZE * size * 2) / 2);
 
         getChildren().add(piece);
 
@@ -85,9 +88,7 @@ public class Checker extends StackPane {
         });
 
         setOnMouseDragged(e -> {
-            if(e.getSceneX() > SQUARESIZE/2 && e.getSceneX() < (WIDTH*SQUARESIZE) - (SQUARESIZE/2) && e.getSceneY() > SQUARESIZE/2 && e.getSceneY() < (HEIGHT*SQUARESIZE) - (SQUARESIZE/2)) {
-                relocate(e.getSceneX() - mouseCoor[0] + (currCoor[0] * SQUARESIZE), e.getSceneY() - mouseCoor[1] + (currCoor[1] * SQUARESIZE));
-            }
+            relocate(e.getSceneX() - mouseCoor[0] + (currCoor[0] * SQUARESIZE), e.getSceneY() - mouseCoor[1] + (currCoor[1] * SQUARESIZE));
         });
     }
 }
