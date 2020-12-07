@@ -18,15 +18,17 @@ import java.util.ArrayList;
 
 public class GameGUI extends Application {
 
-    public static final int squareSize = 100;
-    public static int width;
-    public static int height;
+    public static final int SQUARESIZE = 100;
+    public static int WIDTH;
+    public static int HEIGHT;
 
     private Group squareGroup = new Group();
     private Group checkerGroup = new Group();
-    private Group buttonGroup = new Group();
 
     private GameLogic gameLogic = null;
+
+    private Label blackPointsLabel;
+    private Label redPointsLabel;
 
     @Override
     public void start(Stage primaryStage) {
@@ -56,10 +58,10 @@ public class GameGUI extends Application {
 
         Button generateNewGame = new Button("Generate Game");
         generateNewGame.setOnAction(e -> {
-            Scene scene = new Scene(createGameContent(Integer.valueOf(boardSize.getValue()))) ;
+            Scene scene = new Scene(createGameContent(Integer.valueOf(boardSize.getValue())));
             primaryStage.setTitle("Checkers");
             primaryStage.setScene(scene);
-            //primaryStage.setMaximized(true);
+            primaryStage.setMaximized(true);
             primaryStage.show();
         });
 
@@ -85,27 +87,22 @@ public class GameGUI extends Application {
     }
 
     private Parent createGameContent(int boardSize) {
-        this.width = boardSize;
-        this.height = boardSize;
-
-        Button save = new Button("Save");
-        save.setOnAction(e -> {
-            try {
-                ResourceManager.save(this.gameLogic, "a.save");
-            } catch (Exception error) {
-                System.out.println("Couldn't save: " + error.getMessage());
-            }
-        });
+        this.WIDTH = boardSize;
+        this.HEIGHT = boardSize;
+        Label blackPointsMsg = new Label("Black player's points: ");
+        blackPointsLabel = new Label("0");
+        Label redPointsMsg = new Label("Red player's points: ");
+        redPointsLabel = new Label("0");
 
         StackPane board = new StackPane();
-        board.setPrefSize(width * squareSize, height * squareSize);
+        board.setPrefSize(WIDTH * SQUARESIZE, HEIGHT * SQUARESIZE);
         board.getChildren().addAll(squareGroup, checkerGroup);
         ArrayList<Checker> rCheckers = new ArrayList();
         ArrayList<Checker> bCheckers = new ArrayList();
         ArrayList<Square> wSquares = new ArrayList();
         ArrayList<Square> bSquares = new ArrayList();
-        for(int i=0; i<height; i++) {
-            for(int j=0; j<width; j++) {
+        for(int i = 0; i< HEIGHT; i++) {
+            for(int j = 0; j< WIDTH; j++) {
                 if((i+j)%2 == 0) {
                     wSquares.add(new Square(SquareType.WHITE, new int[]{i, j}));
                 }
@@ -124,27 +121,51 @@ public class GameGUI extends Application {
         gameLogic = new GameLogic(boardSize, rCheckers, bCheckers, wSquares, bSquares);
         UpdateBoard();
 
-//        HBox h = new HBox();
-//        h.setPadding(new Insets(0, 25, 25, 25));
-//        h.setAlignment(Pos.CENTER);
-//        h.setSpacing(5);
-//        h.getChildren().addAll(save);
-//
-//        VBox v = new VBox();
-//        v.setPadding(new Insets(25, 25, 25, 25));
-//        v.setAlignment(Pos.CENTER);
-//        v.getChildren().addAll(h, board);
+        Button save = new Button("Save");
+        save.setOnAction(e -> {
+            try {
+                ResourceManager.save(this.gameLogic, "a.save");
+            } catch (Exception error) {
+                System.out.println("Couldn't save: " + error.getMessage());
+            }
+        });
 
-        return board;
+        HBox h1 = new HBox();
+        h1.setPadding(new Insets(0, 25, 25, 25));
+        h1.setAlignment(Pos.CENTER);
+        h1.setSpacing(5);
+        h1.getChildren().addAll(blackPointsMsg, blackPointsLabel);
+
+        HBox h2 = new HBox();
+        h2.setPadding(new Insets(0, 25, 25, 25));
+        h2.setAlignment(Pos.CENTER);
+        h2.setSpacing(5);
+        h2.getChildren().addAll(redPointsMsg, redPointsLabel);
+
+        VBox v = new VBox();
+        v.setPadding(new Insets(0, 25, 25, 25));
+        v.setAlignment(Pos.CENTER);
+        v.setSpacing(5);
+        v.getChildren().addAll(h1, h2, save);
+
+        HBox h3 = new HBox();
+        h3.setPadding(new Insets(0, 25, 0, 25));
+        h3.setAlignment(Pos.CENTER);
+        h3.setSpacing(5);
+        h3.getChildren().addAll(board, v);
+
+        return h3;
     }
 
     private Checker InitChecker(CheckerType type, int[] coor, double size) {
         Checker checker = new Checker(type, coor, size);
         checker.setOnMouseReleased(e -> {
             int[] newCoor = new int[]{
-                    (int) (checker.getLayoutX() + squareSize / 2) / squareSize,
-                    (int) (checker.getLayoutY() + squareSize / 2) / squareSize};
+                    (int) (checker.getLayoutX() + SQUARESIZE / 2) / SQUARESIZE,
+                    (int) (checker.getLayoutY() + SQUARESIZE / 2) / SQUARESIZE};
             gameLogic.move(checker, newCoor);
+            blackPointsLabel.setText(Integer.toString(gameLogic.getState().getBlackPoints()));
+            redPointsLabel.setText(Integer.toString(gameLogic.getState().getRedPoints()));
             UpdateBoard();
         });
         return checker;
@@ -162,11 +183,11 @@ public class GameGUI extends Application {
         checkerGroup.getChildren().clear();
         for(Checker red : gameLogic.getState().getRCheckers()) {
             checkerGroup.getChildren().add(red);
-            red.relocate(red.getCurrCoor()[0] * squareSize, red.getCurrCoor()[1] * squareSize);
+            red.relocate(red.getCurrCoor()[0] * SQUARESIZE, red.getCurrCoor()[1] * SQUARESIZE);
         }
         for(Checker black : gameLogic.getState().getBCheckers()) {
             checkerGroup.getChildren().add(black);
-            black.relocate(black.getCurrCoor()[0] * squareSize, black.getCurrCoor()[1] * squareSize);
+            black.relocate(black.getCurrCoor()[0] * SQUARESIZE, black.getCurrCoor()[1] * SQUARESIZE);
         }
     }
 

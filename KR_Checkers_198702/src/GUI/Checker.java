@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import jfxtras.labs.util.event.MouseControlUtil;
 
-import static GUI.GameGUI.squareSize;
+import static GUI.GameGUI.SQUARESIZE;
 
 public class Checker extends StackPane {
 
@@ -73,14 +73,14 @@ public class Checker extends StackPane {
 
     public void create(Color mainColour, Color secColour, int[] coor, double size) {
         colour = mainColour;
-        relocate(coor[0] * squareSize, coor[1] * squareSize);
+        relocate(coor[0] * SQUARESIZE, coor[1] * SQUARESIZE);
 
-        Ellipse piece = new Ellipse(squareSize*size, squareSize*size);
+        Ellipse piece = new Ellipse(SQUARESIZE *size, SQUARESIZE *size);
         piece.setFill(mainColour);
         piece.setStroke(secColour);
         piece.setStrokeWidth(3);
 
-        piece.relocate(coor[0] * squareSize, coor[1] * squareSize);
+        piece.relocate(coor[0] * SQUARESIZE, coor[1] * SQUARESIZE);
         getChildren().addAll(piece);
     }
 }

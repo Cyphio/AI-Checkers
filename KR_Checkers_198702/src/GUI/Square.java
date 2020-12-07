@@ -3,7 +3,7 @@ package GUI;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import static GUI.GameGUI.squareSize;
+import static GUI.GameGUI.SQUARESIZE;
 
 public class Square extends Rectangle {
 
@@ -24,9 +24,9 @@ public class Square extends Rectangle {
         }
 
         setFill(colour);
-        setWidth(squareSize);
-        setHeight(squareSize);
-        relocate(coor[0] * squareSize, coor[1] * squareSize);
+        setWidth(SQUARESIZE);
+        setHeight(SQUARESIZE);
+        relocate(coor[0] * SQUARESIZE, coor[1] * SQUARESIZE);
     }
 
     public Color getColour() {
