@@ -28,7 +28,7 @@ public class Checker extends StackPane {
 
 
         if(type == CheckerType.RED) {
-            create(Color.RED, Color.GOLD, coor, size);
+            create(Color.RED, Color.WHITE, coor, size);
             moveCoors = new int[][]{{-1, 1}, {1, 1}};
             jumpCoors = new int[][]{{-2, 2}, {2, 2}};
         }
@@ -42,6 +42,8 @@ public class Checker extends StackPane {
     }
 
     public Color getColour() { return colour; }
+
+    public CheckerType getType() { return type; }
 
     public int[] getCurrCoor() {
         return currCoor;

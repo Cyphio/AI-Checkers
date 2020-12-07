@@ -23,9 +23,24 @@ public class GameState {
         redPoints = 0;
         checkerState = new Checker[rCheckers.size()][bCheckers.size()];
         squareState = new Square[wSquares.size()][bSquares.size()];
-        updateCheckers();
-        updateSquares();
+        for(Square white : wSquares) {
+            int[] coor = white.getCoor();
+            squareState[coor[0]][coor[1]] = white;
+        }
+        for(Square black : bSquares) {
+            int[] coor = black.getCoor();
+            squareState[coor[0]][coor[1]] = black;
+        }
+        update();
     }
+
+    public ArrayList<Checker> getRCheckers() { return rCheckers; }
+
+    public ArrayList<Checker> getBCheckers() { return bCheckers; }
+
+    public ArrayList<Square> getWSquares() { return wSquares; }
+
+    public ArrayList<Square> getBSquares() { return bSquares; }
 
     public int getRedPoints() { return redPoints; }
 
@@ -39,14 +54,20 @@ public class GameState {
         blackPoints++;
     }
 
-    public void updateCheckers() {
+    public void update() {
+        for(Square black : bSquares) {
+            int[] coor = black.getCoor();
+            squareState[coor[0]][coor[1]].setCanMoveTo(true);
+        }
         for(Checker red : rCheckers) {
             int[] coor = red.getCurrCoor();
             checkerState[coor[0]][coor[1]] = red;
+            squareState[coor[0]][coor[1]].setCanMoveTo(false);
         }
         for(Checker black : bCheckers) {
             int[] coor = black.getCurrCoor();
             checkerState[coor[0]][coor[1]] = black;
+            squareState[coor[0]][coor[1]].setCanMoveTo(false);
         }
     }
 
@@ -62,14 +83,12 @@ public class GameState {
         checkerState[coor[0]][coor[1]] = null;
     }
 
-    public void updateSquares() {
-        for(Square white : wSquares) {
-            int[] coor = white.getCoor();
-            squareState[coor[0]][coor[1]] = white;
+    public void removeCheckerFromGame(Checker checker) {
+        if(checker.getType() == CheckerType.BLACK) {
+            bCheckers.remove(checker);
         }
-        for(Square black : bSquares) {
-            int[] coor = black.getCoor();
-            squareState[coor[0]][coor[1]] = black;
+        else if(checker.getType() == CheckerType.RED) {
+            rCheckers.remove(checker);
         }
     }
 

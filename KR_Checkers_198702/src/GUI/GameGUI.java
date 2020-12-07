@@ -27,10 +27,6 @@ public class GameGUI extends Application {
     private Group buttonGroup = new Group();
 
     private GameLogic gameLogic = null;
-    private ArrayList<Checker> rCheckers = new ArrayList();
-    private ArrayList<Checker> bCheckers = new ArrayList();
-    private ArrayList<Square> wSquares = new ArrayList();
-    private ArrayList<Square> bSquares = new ArrayList();
 
     @Override
     public void start(Stage primaryStage) {
@@ -104,32 +100,29 @@ public class GameGUI extends Application {
         StackPane board = new StackPane();
         board.setPrefSize(width * squareSize, height * squareSize);
         board.getChildren().addAll(squareGroup, checkerGroup);
+        ArrayList<Checker> rCheckers = new ArrayList();
+        ArrayList<Checker> bCheckers = new ArrayList();
+        ArrayList<Square> wSquares = new ArrayList();
+        ArrayList<Square> bSquares = new ArrayList();
         for(int i=0; i<height; i++) {
             for(int j=0; j<width; j++) {
                 if((i+j)%2 == 0) {
-                    Square white = new Square(SquareType.WHITE, new int[]{i, j});
-                    wSquares.add(white);
-                    squareGroup.getChildren().add(white);
+                    wSquares.add(new Square(SquareType.WHITE, new int[]{i, j}));
                 }
                 else {
-                    Square black = new Square(SquareType.BLACK, new int[]{i, j});
-                    bSquares.add(black);
-                    squareGroup.getChildren().add(black);
+                    bSquares.add(new Square(SquareType.BLACK, new int[]{i, j}));
                 }
                 if(j <= (boardSize/2)-2 && (i+j)%2 != 0) {
-                    Checker red = InitChecker(CheckerType.RED, new int[]{i, j}, 0.4);
-                    rCheckers.add(red);
-                    checkerGroup.getChildren().add(red);
+                    rCheckers.add(InitChecker(CheckerType.RED, new int[]{i, j}, 0.4));
                 }
                 else if(j >= (boardSize/2)+1 && (i+j)%2 != 0) {
-                    Checker black = InitChecker(CheckerType.BLACK, new int[]{i, j}, 0.4);
-                    bCheckers.add(black);
-                    checkerGroup.getChildren().add(black);
+                    bCheckers.add(InitChecker(CheckerType.BLACK, new int[]{i, j}, 0.4));
                 }
             }
         }
 
         gameLogic = new GameLogic(boardSize, rCheckers, bCheckers, wSquares, bSquares);
+        UpdateBoard();
 
 //        HBox h = new HBox();
 //        h.setPadding(new Insets(0, 25, 25, 25));
@@ -158,10 +151,21 @@ public class GameGUI extends Application {
     }
 
     private void UpdateBoard() {
-        for(Checker red : rCheckers) {
+        squareGroup.getChildren().clear();
+        for(Square white : gameLogic.getState().getWSquares()) {
+            squareGroup.getChildren().add(white);
+        }
+        for(Square black : gameLogic.getState().getBSquares()) {
+            squareGroup.getChildren().add(black);
+        }
+
+        checkerGroup.getChildren().clear();
+        for(Checker red : gameLogic.getState().getRCheckers()) {
+            checkerGroup.getChildren().add(red);
             red.relocate(red.getCurrCoor()[0] * squareSize, red.getCurrCoor()[1] * squareSize);
         }
-        for(Checker black : bCheckers) {
+        for(Checker black : gameLogic.getState().getBCheckers()) {
+            checkerGroup.getChildren().add(black);
             black.relocate(black.getCurrCoor()[0] * squareSize, black.getCurrCoor()[1] * squareSize);
         }
     }
