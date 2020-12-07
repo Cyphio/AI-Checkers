@@ -119,12 +119,12 @@ public class GameGUI extends Application {
         UpdateBoard();
 
         Label turnMsg1 = new Label("It's currently");
-        turnLabel = new Label(gameLogic.getWhosTurnName());
-        Label turnMsg2 = new Label("player's turn");
+        turnLabel = new Label(gameLogic.getState().getWhosTurnName());
+        Label turnMsg2 = new Label("Player's turn");
 
-        Label blackPointsMsg = new Label("Black player's points: ");
+        Label blackPointsMsg = new Label("Black Player's points: ");
         blackPointsLabel = new Label("0");
-        Label redPointsMsg = new Label("Red player's points: ");
+        Label redPointsMsg = new Label("Red Player's points: ");
         redPointsLabel = new Label("0");
 
         turnMsg1.setFont(new Font(fontSize));
@@ -187,10 +187,14 @@ public class GameGUI extends Application {
             int[] newCoor = new int[]{
                     (int) (checker.getLayoutX() + SQUARESIZE / 2) / SQUARESIZE,
                     (int) (checker.getLayoutY() + SQUARESIZE / 2) / SQUARESIZE};
+
             gameLogic.move(checker, newCoor);
-            turnLabel.setText(gameLogic.getWhosTurnName());
+            gameLogic.checkCircumstances();
+
+            turnLabel.setText(gameLogic.getState().getWhosTurnName());
             blackPointsLabel.setText(Integer.toString(gameLogic.getState().getBlackPoints()));
             redPointsLabel.setText(Integer.toString(gameLogic.getState().getRedPoints()));
+
             UpdateBoard();
         });
 

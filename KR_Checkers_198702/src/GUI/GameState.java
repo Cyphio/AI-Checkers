@@ -12,7 +12,7 @@ public class GameState {
     private ArrayList<Square> bSquares;
     private int blackPoints;
     private int redPoints;
-
+    private CheckerType whosTurn;
 
     public GameState(int boardSize, ArrayList<Checker> rCheckers, ArrayList<Checker> bCheckers, ArrayList<Square> wSquares, ArrayList<Square> bSquares) {
         this.rCheckers = rCheckers;
@@ -22,6 +22,8 @@ public class GameState {
 
         blackPoints = 0;
         redPoints = 0;
+
+        whosTurn = CheckerType.BLACK;
 
         checkerState = new Checker[rCheckers.size()][bCheckers.size()];
         squareState = new Square[wSquares.size()][bSquares.size()];
@@ -55,6 +57,18 @@ public class GameState {
     public void incrementBlackPoints() {
         blackPoints++;
     }
+
+    public void nextTurn() {
+        if(whosTurn == CheckerType.BLACK) { whosTurn = CheckerType.RED; }
+        else if(whosTurn == CheckerType.RED) { whosTurn = CheckerType.BLACK; }
+    }
+
+    public String getWhosTurnName() {
+        if(whosTurn == CheckerType.BLACK) { return "Black"; }
+        else { return "Red"; }
+    }
+
+    public CheckerType getWhosTurn() { return whosTurn; }
 
     public void update() {
         for(Square black : bSquares) {
