@@ -96,7 +96,7 @@ public class GameGUI extends Application {
 
         StackPane board = new StackPane();
         board.setPrefSize(WIDTH * SQUARESIZE, HEIGHT * SQUARESIZE);
-        board.getChildren().addAll(squareGroup, checkerGroup);
+
         ArrayList<Checker> rCheckers = new ArrayList();
         ArrayList<Checker> bCheckers = new ArrayList();
         ArrayList<Square> wSquares = new ArrayList();
@@ -120,6 +120,8 @@ public class GameGUI extends Application {
 
         gameLogic = new GameLogic(boardSize, rCheckers, bCheckers, wSquares, bSquares);
         UpdateBoard();
+
+        board.getChildren().addAll(squareGroup, checkerGroup);
 
         Button save = new Button("Save");
         save.setOnAction(e -> {
@@ -159,6 +161,7 @@ public class GameGUI extends Application {
 
     private Checker InitChecker(CheckerType type, int[] coor, double size) {
         Checker checker = new Checker(type, coor, size);
+
         checker.setOnMouseReleased(e -> {
             int[] newCoor = new int[]{
                     (int) (checker.getLayoutX() + SQUARESIZE / 2) / SQUARESIZE,
@@ -168,6 +171,7 @@ public class GameGUI extends Application {
             redPointsLabel.setText(Integer.toString(gameLogic.getState().getRedPoints()));
             UpdateBoard();
         });
+
         return checker;
     }
 
