@@ -1,4 +1,4 @@
-package GUI.CHECKERS;
+package GUI;
 
 public enum CheckerType {
     RED, BLACK;

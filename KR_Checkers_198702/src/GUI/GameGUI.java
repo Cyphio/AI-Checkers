@@ -1,10 +1,5 @@
 package GUI;
 
-import GUI.CHECKERS.Checker;
-import GUI.CHECKERS.CheckerType;
-import GUI.SQUARES.BlackSquare;
-import GUI.SQUARES.Square;
-import GUI.SQUARES.WhiteSquare;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -112,12 +107,12 @@ public class GameGUI extends Application {
         for(int i=0; i<height; i++) {
             for(int j=0; j<width; j++) {
                 if((i+j)%2 == 0) {
-                    Square white = new WhiteSquare(new int[]{i, j});
+                    Square white = new Square(SquareType.WHITE, new int[]{i, j});
                     wSquares.add(white);
                     squareGroup.getChildren().add(white);
                 }
                 else {
-                    Square black = new BlackSquare(new int[]{i, j});
+                    Square black = new Square(SquareType.BLACK, new int[]{i, j});
                     bSquares.add(black);
                     squareGroup.getChildren().add(black);
                 }
@@ -135,8 +130,6 @@ public class GameGUI extends Application {
         }
 
         gameLogic = new GameLogic(boardSize, rCheckers, bCheckers, wSquares, bSquares);
-
-        System.out.println(gameLogic.getbCheckers().size());
 
 //        HBox h = new HBox();
 //        h.setPadding(new Insets(0, 25, 25, 25));
@@ -158,16 +151,18 @@ public class GameGUI extends Application {
             int[] newCoor = new int[]{
                     (int) (checker.getLayoutX() + squareSize / 2) / squareSize,
                     (int) (checker.getLayoutY() + squareSize / 2) / squareSize};
-            TryMove(checker, coor, newCoor);
+            gameLogic.move(checker, newCoor);
+            UpdateBoard();
         });
         return checker;
     }
 
-    private void TryMove(Checker checker, int[] currCoor, int[] newCoor) {
-        if(gameLogic.move(currCoor, newCoor)) {
-            checker.relocate(newCoor[0] * squareSize, newCoor[1] * squareSize);
-        } else {
-            checker.relocate(currCoor[0] * squareSize, currCoor[1] * squareSize);
+    private void UpdateBoard() {
+        for(Checker red : rCheckers) {
+            red.relocate(red.getCurrCoor()[0] * squareSize, red.getCurrCoor()[1] * squareSize);
+        }
+        for(Checker black : bCheckers) {
+            black.relocate(black.getCurrCoor()[0] * squareSize, black.getCurrCoor()[1] * squareSize);
         }
     }
 

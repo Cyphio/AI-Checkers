@@ -1,4 +1,4 @@
-package GUI.CHECKERS;
+package GUI;
 
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -26,15 +26,16 @@ public class Checker extends StackPane {
         kingMoveCoors = new int[][]{{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
         kingJumpCoors = new int[][]{{-2, -2}, {-2, 2}, {2, -2}, {-2, -2}};
 
+
         if(type == CheckerType.RED) {
-            create(Color.RED, Color.WHITE, coor, size);
-            moveCoors = new int[][]{{-1, -1}, {-1, 1}};
-            jumpCoors = new int[][]{{-2, -2}, {-2, 2}};
+            create(Color.RED, Color.GOLD, coor, size);
+            moveCoors = new int[][]{{-1, 1}, {1, 1}};
+            jumpCoors = new int[][]{{-2, 2}, {2, 2}};
         }
         if(type == CheckerType.BLACK) {
             create(Color.BLACK, Color.WHITE, coor, size);
-            moveCoors = new int[][]{{1, -1}, {1, 1}};
-            jumpCoors = new int[][]{{2, -2}, {2, 2}};
+            moveCoors = new int[][]{{-1, -1}, {1, -1}};
+            jumpCoors = new int[][]{{-2, -2}, {2, -2}};
         }
 
         MouseControlUtil.makeDraggable(this);
