@@ -4,7 +4,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 
-import static GUI.GameGUI.*;
+import static GUI.GameGUI.SQUARESIZE;
 
 public class Checker extends StackPane {
 
@@ -73,15 +73,15 @@ public class Checker extends StackPane {
 
         relocate(SQUARESIZE + SQUARESIZE / 2, SQUARESIZE + SQUARESIZE / 2);
 
-        Ellipse piece = new Ellipse(SQUARESIZE * size, SQUARESIZE * size);
-        piece.setFill(mainColour);
-        piece.setStroke(secColour);
-        piece.setStrokeWidth(3);
+        Ellipse checkerPiece = new Ellipse(SQUARESIZE * size, SQUARESIZE * size);
+        checkerPiece.setFill(mainColour);
+        checkerPiece.setStroke(secColour);
+        checkerPiece.setStrokeWidth(3);
 
-        piece.setTranslateX((SQUARESIZE - SQUARESIZE * size * 2) / 2);
-        piece.setTranslateY((SQUARESIZE - SQUARESIZE * size * 2) / 2);
+        checkerPiece.setTranslateX((SQUARESIZE - checkerPiece.getRadiusX() * 2) / 2);
+        checkerPiece.setTranslateY((SQUARESIZE - checkerPiece.getRadiusY() * 2) / 2);
 
-        getChildren().add(piece);
+        getChildren().add(checkerPiece);
 
         setOnMousePressed(e -> {
             mouseCoor = new double[]{e.getSceneX(), e.getSceneY()};

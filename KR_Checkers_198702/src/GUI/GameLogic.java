@@ -9,29 +9,45 @@ public class GameLogic {
 
     private final int boardSize;
     private GameState state;
+    private CheckerType whosTurn;
 
     public GameLogic(int boardSize, ArrayList<Checker> rCheckers, ArrayList<Checker> bCheckers, ArrayList<Square> wSquares, ArrayList<Square> bSquares) {
         this.boardSize = boardSize;
         state = new GameState(boardSize, rCheckers, bCheckers, wSquares, bSquares);
+        whosTurn = CheckerType.BLACK;
     }
 
     public GameState getState() {
         return state;
     }
 
+    public void nextTurn() {
+        if(whosTurn == CheckerType.BLACK) { whosTurn = CheckerType.RED; }
+        else if(whosTurn == CheckerType.RED) { whosTurn = CheckerType.BLACK; }
+    }
+
+    public CheckerType getWhosTurn() { return whosTurn; }
+
+    public String getWhosTurnName() {
+        if(whosTurn == CheckerType.BLACK) { return "black"; }
+        else { return "red"; }
+    }
+
     public boolean move(Checker checker, int[] newCoor) {
         int[] currCoor = checker.getCurrCoor();
         try {
-            if (state.getSquareAt(newCoor).canMoveTo()) {
+            if (checker.getType() == getWhosTurn() && state.getSquareAt(newCoor).canMoveTo()) {
                 if (isLegalMove(currCoor, newCoor)) {
                     state.removeCheckerAt(currCoor);
                     checker.setCurrCoor(newCoor);
                     state.update();
+                    nextTurn();
                     return true;
                 }
                 if (isLegalJump(currCoor, newCoor)) {
                     capture(checker, newCoor);
                     state.update();
+                    nextTurn();
                     return true;
                 }
             }
@@ -88,6 +104,7 @@ public class GameLogic {
                 if(isLegalJump(currCoor, newCoor)) {
                     System.out.println("FORCED CAPTURE");
                     capture(checker, newCoor);
+                    state.update();
                     return true;
                 }
             }

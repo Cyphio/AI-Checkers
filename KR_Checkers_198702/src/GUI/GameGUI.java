@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class GameGUI extends Application {
 
     private GameLogic gameLogic = null;
 
+    private Label turnLabel;
     private Label blackPointsLabel;
     private Label redPointsLabel;
 
@@ -87,11 +89,7 @@ public class GameGUI extends Application {
     private Parent createGameContent(int boardSize) {
         this.WIDTH = boardSize;
         this.HEIGHT = boardSize;
-
-        Label blackPointsMsg = new Label("Black player's points: ");
-        blackPointsLabel = new Label("0");
-        Label redPointsMsg = new Label("Red player's points: ");
-        redPointsLabel = new Label("0");
+        int fontSize = 15;
 
         Pane board = new Pane();
         board.setPrefSize(WIDTH * SQUARESIZE, HEIGHT * SQUARESIZE);
@@ -120,6 +118,23 @@ public class GameGUI extends Application {
         gameLogic = new GameLogic(boardSize, rCheckers, bCheckers, wSquares, bSquares);
         UpdateBoard();
 
+        Label turnMsg1 = new Label("It's currently");
+        turnLabel = new Label(gameLogic.getWhosTurnName());
+        Label turnMsg2 = new Label("player's turn");
+
+        Label blackPointsMsg = new Label("Black player's points: ");
+        blackPointsLabel = new Label("0");
+        Label redPointsMsg = new Label("Red player's points: ");
+        redPointsLabel = new Label("0");
+
+        turnMsg1.setFont(new Font(fontSize));
+        turnLabel.setFont(new Font(fontSize));
+        turnMsg2.setFont(new Font(fontSize));
+        blackPointsMsg.setFont(new Font(fontSize));
+        blackPointsLabel.setFont(new Font(fontSize));
+        redPointsMsg.setFont(new Font(fontSize));
+        redPointsLabel.setFont(new Font(fontSize));
+
         board.getChildren().addAll(squareGroup, checkerGroup);
 
         Button save = new Button("Save");
@@ -135,27 +150,34 @@ public class GameGUI extends Application {
         h1.setPadding(new Insets(25, 25, 25, 25));
         h1.setAlignment(Pos.CENTER);
         h1.setSpacing(5);
-        h1.getChildren().addAll(blackPointsMsg, blackPointsLabel);
+        h1.setPrefWidth(300);
+        h1.getChildren().addAll(turnMsg1, turnLabel, turnMsg2);
 
         HBox h2 = new HBox();
         h2.setPadding(new Insets(0, 25, 25, 25));
         h2.setAlignment(Pos.CENTER);
         h2.setSpacing(5);
-        h2.getChildren().addAll(redPointsMsg, redPointsLabel);
+        h2.getChildren().addAll(blackPointsMsg, blackPointsLabel);
+
+        HBox h3= new HBox();
+        h3.setPadding(new Insets(0, 25, 25, 25));
+        h3.setAlignment(Pos.CENTER);
+        h3.setSpacing(5);
+        h3.getChildren().addAll(redPointsMsg, redPointsLabel);
 
         VBox v = new VBox();
         v.setPadding(new Insets(0, 25, 25, 25));
         v.setAlignment(Pos.CENTER);
         v.setSpacing(5);
-        v.getChildren().addAll(h1, h2, save);
+        v.getChildren().addAll(h1, h2, h3, save);
 
-        HBox h3 = new HBox();
-        h3.setPadding(new Insets(25, 25, 25, 25));
-        h3.setAlignment(Pos.CENTER);
-        h3.setSpacing(5);
-        h3.getChildren().addAll(board, v);
+        HBox h4 = new HBox();
+        h4.setPadding(new Insets(25, 25, 25, 25));
+        h4.setAlignment(Pos.CENTER);
+        h4.setSpacing(5);
+        h4.getChildren().addAll(board, v);
 
-        return h3;
+        return h4;
     }
 
     private Checker InitChecker(CheckerType type, int[] coor, double size) {
@@ -166,6 +188,7 @@ public class GameGUI extends Application {
                     (int) (checker.getLayoutX() + SQUARESIZE / 2) / SQUARESIZE,
                     (int) (checker.getLayoutY() + SQUARESIZE / 2) / SQUARESIZE};
             gameLogic.move(checker, newCoor);
+            turnLabel.setText(gameLogic.getWhosTurnName());
             blackPointsLabel.setText(Integer.toString(gameLogic.getState().getBlackPoints()));
             redPointsLabel.setText(Integer.toString(gameLogic.getState().getRedPoints()));
             UpdateBoard();

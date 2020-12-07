@@ -19,8 +19,10 @@ public class GameState {
         this.bCheckers = bCheckers;
         this.wSquares = wSquares;
         this.bSquares = bSquares;
+
         blackPoints = 0;
         redPoints = 0;
+
         checkerState = new Checker[rCheckers.size()][bCheckers.size()];
         squareState = new Square[wSquares.size()][bSquares.size()];
         for(Square white : wSquares) {
