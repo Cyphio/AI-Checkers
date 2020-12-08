@@ -57,13 +57,18 @@ public class Checker extends StackPane {
         else { return jumpCoors; }
     }
 
-    public void setStroke(Color colour) {
-        checkerPiece.setStroke(colour);
+    public void setAtRisk() {
+        checkerPiece.setStroke(Color.GREENYELLOW);
+    }
+
+    public void removeAtRisk() {
+        if(isKing) { checkerPiece.setStroke(Color.GOLD); }
+        else { checkerPiece.setStroke(Color.WHITE); }
     }
 
     public void turnIntoKing() {
         isKing = true;
-        setStroke(Color.GOLD);
+        checkerPiece.setStroke(Color.GOLD);
     }
 
     public boolean getKing() {

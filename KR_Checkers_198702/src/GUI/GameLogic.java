@@ -20,11 +20,17 @@ public class GameLogic {
     }
 
     public void takeTurn(Checker checker, int[] newCoor) {
+        state.update();
         if (tryMove(checker, newCoor)) {
             if (isAtBaseline(checker)) {
                 checker.turnIntoKing();
             }
+            identifyRiskCheckers();
             state.endTurn();
+        }
+        // Checking if forced capture is possible after opponents piece has been moved.
+        if(state.isComplete()) {
+            System.out.println(state.getWhosTurnName() + "wins!!!");
         }
     }
 
@@ -72,11 +78,15 @@ public class GameLogic {
         Checker checker = state.getCheckerAt(currCoor);
         int[] proposedJumpCoor = new int[]{newCoor[0] - currCoor[0], newCoor[1] - currCoor[1]};
         try {
-            for (int[] jumpCoor : checker.getJumpCoors()) {
-                if (Arrays.equals(jumpCoor, proposedJumpCoor)) {
-                    Checker midChecker = state.getCheckerAt(new int[]{(currCoor[0] + newCoor[0]) / 2, (currCoor[1] + newCoor[1]) / 2});
-                    if (midChecker == null) { return false; }
-                    return (midChecker.getType() != checker.getType());
+            if(newCoor[0] >= 0 && newCoor[0] < boardSize && newCoor[1] >= 0 && newCoor[1] < boardSize) {
+                for (int[] jumpCoor : checker.getJumpCoors()) {
+                    if (Arrays.equals(jumpCoor, proposedJumpCoor)) {
+                        Checker midChecker = state.getCheckerAt(new int[]{(currCoor[0] + newCoor[0]) / 2, (currCoor[1] + newCoor[1]) / 2});
+                        if (midChecker == null) {
+                            return false;
+                        }
+                        return (midChecker.getType() != checker.getType());
+                    }
                 }
             }
         } catch(Exception e) { e.getMessage(); }
@@ -108,8 +118,22 @@ public class GameLogic {
 //
 //    }
 
-    public HashMap<Checker, int[]> getCheckersAtRisk() {
-        ArrayList<Checker> checkers = new ArrayList<>();
+    private void identifyRiskCheckers() {
+        HashMap<Checker, int[]> checkersAtRisk = getCheckersAtRisk();
+        ArrayList<Checker> riskCheckers = new ArrayList<>();
+        for(Checker riskChecker : checkersAtRisk.keySet()) {
+            riskChecker.setAtRisk();;
+            riskCheckers.add(riskChecker);
+        }
+        ArrayList<Checker> noRiskCheckers = state.getCheckers();
+        noRiskCheckers.removeAll(riskCheckers);
+        for(Checker noRiskChecker : noRiskCheckers) {
+            noRiskChecker.removeAtRisk();
+        }
+    }
+
+    private HashMap<Checker, int[]> getCheckersAtRisk() {
+        ArrayList<Checker> checkers = null;
         if(state.getWhosTurn() == CheckerType.BLACK) { checkers = state.getBCheckers(); }
         else { checkers = state.getRCheckers(); }
 
@@ -118,11 +142,12 @@ public class GameLogic {
             int[] currCoor = checker.getCurrCoor();
             for(int[] jumpCoor : checker.getJumpCoors()) {
                 int[] newCoor = new int[]{currCoor[0] + jumpCoor[0], currCoor[1] + jumpCoor[1]};
-                if((newCoor[0] >= 0 && newCoor[0] <= boardSize-1) && (newCoor[1] >= 0 && newCoor[1] <= boardSize-1)) {
-                    if(isLegalJump(currCoor, newCoor) && state.getSquareAt(newCoor).canMoveTo()) {
-                        checkersAtRisk.put(checker, newCoor);
+                if(isLegalJump(currCoor, newCoor)) {
+                        if (state.getSquareAt(newCoor).canMoveTo()) {
+                            Checker midChecker = state.getCheckerAt(new int[]{(currCoor[0] + newCoor[0]) / 2, (currCoor[1] + newCoor[1]) / 2});
+                            checkersAtRisk.put(checker, currCoor);
+                        }
                     }
-                }
             }
         }
         return checkersAtRisk;

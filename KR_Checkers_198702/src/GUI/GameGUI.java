@@ -12,12 +12,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class GameGUI extends Application {
 
@@ -39,7 +37,7 @@ public class GameGUI extends Application {
 
         Label boardSizeMsg = new Label("Board size: ");
         ChoiceBox<String> boardSize = new ChoiceBox<>();
-        boardSize.getItems().addAll("6", "8", "10");
+        boardSize.getItems().addAll( "6", "8", "10");
         boardSize.setValue("8");
 
         Label difficultyMsg = new Label("Difficulty: ");
@@ -198,13 +196,7 @@ public class GameGUI extends Application {
 
             UpdateBoard();
 
-            // Checking if forced capture is possible after opponents piece has been moved.
-            HashMap<Checker, int[]> checkersAtRisk = gameLogic.getCheckersAtRisk();
-            if(!checkersAtRisk.isEmpty()) {
-                for(Checker riskChecker : checkersAtRisk.keySet()) {
-                    riskChecker.setStroke(Color.GREENYELLOW);
-                }
-            }
+
         });
 
         return checker;

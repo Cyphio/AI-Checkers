@@ -42,6 +42,13 @@ public class GameState {
 
     public ArrayList<Checker> getBCheckers() { return bCheckers; }
 
+    public ArrayList<Checker> getCheckers() {
+        ArrayList<Checker> allCheckers = new ArrayList<>();
+        allCheckers.addAll(rCheckers);
+        allCheckers.addAll(bCheckers);
+        return allCheckers;
+    }
+
     public ArrayList<Square> getWSquares() { return wSquares; }
 
     public ArrayList<Square> getBSquares() { return bSquares; }
