@@ -10,6 +10,7 @@ public class Checker extends StackPane {
 
     private CheckerType type;
     private Ellipse checkerPiece;
+    private boolean atRisk;
     private int[] currCoor;
     private double[] mouseCoor;
     private boolean isKing;
@@ -58,12 +59,18 @@ public class Checker extends StackPane {
     }
 
     public void setAtRisk() {
+        atRisk = true;
         checkerPiece.setStroke(Color.GREENYELLOW);
     }
 
     public void removeAtRisk() {
+        atRisk = false;
         if(isKing) { checkerPiece.setStroke(Color.GOLD); }
         else { checkerPiece.setStroke(Color.WHITE); }
+    }
+
+    public boolean isAtRisk() {
+        return atRisk;
     }
 
     public void turnIntoKing() {
