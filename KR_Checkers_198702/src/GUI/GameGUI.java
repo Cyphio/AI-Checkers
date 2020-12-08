@@ -12,10 +12,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GameGUI extends Application {
 
@@ -188,15 +190,21 @@ public class GameGUI extends Application {
                     (int) (checker.getLayoutX() + SQUARESIZE / 2) / SQUARESIZE,
                     (int) (checker.getLayoutY() + SQUARESIZE / 2) / SQUARESIZE};
 
-            if(!gameLogic.tryForcedCapture()) {
-                gameLogic.move(checker, newCoor);
-            }
+            gameLogic.takeTurn(checker, newCoor);
 
             turnLabel.setText(gameLogic.getState().getWhosTurnName());
             blackPointsLabel.setText(Integer.toString(gameLogic.getState().getBlackPoints()));
             redPointsLabel.setText(Integer.toString(gameLogic.getState().getRedPoints()));
 
             UpdateBoard();
+
+            // Checking if forced capture is possible after opponents piece has been moved.
+            HashMap<Checker, int[]> checkersAtRisk = gameLogic.getCheckersAtRisk();
+            if(!checkersAtRisk.isEmpty()) {
+                for(Checker riskChecker : checkersAtRisk.keySet()) {
+                    riskChecker.setStroke(Color.GREENYELLOW);
+                }
+            }
         });
 
         return checker;

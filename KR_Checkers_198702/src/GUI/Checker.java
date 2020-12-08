@@ -9,8 +9,7 @@ import static GUI.GameGUI.SQUARESIZE;
 public class Checker extends StackPane {
 
     private CheckerType type;
-    private Color colour;
-    private double size;
+    private Ellipse checkerPiece;
     private int[] currCoor;
     private double[] mouseCoor;
     private boolean isKing;
@@ -38,8 +37,6 @@ public class Checker extends StackPane {
         }
     }
 
-    public Color getColour() { return colour; }
-
     public CheckerType getType() { return type; }
 
     public int[] getCurrCoor() {
@@ -60,9 +57,13 @@ public class Checker extends StackPane {
         else { return jumpCoors; }
     }
 
+    public void setStroke(Color colour) {
+        checkerPiece.setStroke(colour);
+    }
+
     public void turnIntoKing() {
         isKing = true;
-        create(colour, Color.GOLD, currCoor, size);
+        setStroke(Color.GOLD);
     }
 
     public boolean getKing() {
@@ -70,13 +71,11 @@ public class Checker extends StackPane {
     }
 
     public void create(Color colour, Color secColour, int[] coor, double size) {
-        this.colour = colour;
-        this.size = size;
         currCoor = coor;
 
         relocate(SQUARESIZE + SQUARESIZE / 2, SQUARESIZE + SQUARESIZE / 2);
 
-        Ellipse checkerPiece = new Ellipse(SQUARESIZE * size, SQUARESIZE * size);
+        checkerPiece = new Ellipse(SQUARESIZE * size, SQUARESIZE * size);
         checkerPiece.setFill(colour);
         checkerPiece.setStroke(secColour);
         checkerPiece.setStrokeWidth(3);
