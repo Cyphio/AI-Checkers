@@ -24,7 +24,7 @@ public class Checker extends StackPane {
 
         isKing = false;
         kingMoveCoors = new int[][]{{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
-        kingJumpCoors = new int[][]{{-2, -2}, {-2, 2}, {2, -2}, {-2, -2}};
+        kingJumpCoors = new int[][]{{-2, -2}, {-2, 2}, {2, -2}, {2, 2}};
 
         if(type == CheckerType.RED) {
             create(Color.RED, Color.WHITE, coor, size);

@@ -1,27 +1,45 @@
 package GUI;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class GameState {
 
+    private final int boardSize;
+
     private Checker[][] checkerState;
     private Square[][] squareState;
+
     private ArrayList<Checker> rCheckers;
     private ArrayList<Checker> bCheckers;
     private ArrayList<Square> wSquares;
     private ArrayList<Square> bSquares;
+
+    private int redLeft;
+    private int blackLeft;
+    private int nRedKings;
+    private int nBlackKings;
+
     private int blackPoints;
     private int redPoints;
+
     private CheckerType whosTurn;
 
     public GameState(int boardSize, ArrayList<Checker> rCheckers, ArrayList<Checker> bCheckers, ArrayList<Square> wSquares, ArrayList<Square> bSquares) {
+        this.boardSize = boardSize;
+
         this.rCheckers = rCheckers;
         this.bCheckers = bCheckers;
         this.wSquares = wSquares;
         this.bSquares = bSquares;
 
-        blackPoints = 0;
+        redLeft = rCheckers.size();
+        blackLeft = bCheckers.size();
+        nRedKings = 0;
+        nBlackKings = 0;
         redPoints = 0;
+        blackPoints = 0;
 
         whosTurn = CheckerType.BLACK;
 
@@ -65,7 +83,7 @@ public class GameState {
         blackPoints++;
     }
 
-    public void endTurn() {
+    public void changeTurn() {
         if(whosTurn == CheckerType.BLACK) { whosTurn = CheckerType.RED; }
         else if(whosTurn == CheckerType.RED) { whosTurn = CheckerType.BLACK; }
     }
@@ -94,10 +112,6 @@ public class GameState {
         }
     }
 
-    public Checker[][] getCheckerState() {
-        return checkerState;
-    }
-
     public Checker getCheckerAt(int[] coor) {
         return checkerState[coor[0]][coor[1]];
     }
@@ -109,21 +123,187 @@ public class GameState {
     public void removeCheckerFromGame(Checker checker) {
         if(checker.getType() == CheckerType.BLACK) {
             bCheckers.remove(checker);
+            blackLeft--;
         }
         else if(checker.getType() == CheckerType.RED) {
             rCheckers.remove(checker);
+            redLeft--;
         }
     }
 
-    public Square[][] getSquareState() {
-        return squareState;
+    public void makeKing(Checker checker) {
+        checker.turnIntoKing();
+        if(checker.getType() == CheckerType.BLACK) { nBlackKings++; }
+        else { nRedKings++; }
+    }
+
+    public void regicide(Checker midChecker, Checker checker) {
+        makeKing(checker);
+        if(midChecker.getType() == CheckerType.BLACK) { nBlackKings--; }
+        else { nRedKings--; }
     }
 
     public Square getSquareAt(int[] coor) {
         return squareState[coor[0]][coor[1]];
     }
 
+    public void takeTurn(Checker checker, int[] newCoor) {
+        if (tryMove(checker, newCoor)) {
+            if (isAtBaseline(checker)) {
+                makeKing(checker);
+            }
+
+            changeTurn();
+
+            HashMap<Checker, int[]> checkersAtRisk =  getCheckersAtRisk();
+//            if(checkersAtRisk.keySet().size() == 1) {
+//                tryForcedCapture
+//            }
+
+            if(isComplete()) {
+                System.out.println(getWhosTurnName() + "wins!!!");
+            }
+        }
+    }
+
+    public boolean isAtBaseline(Checker checker) {
+        if(checker.getType() == CheckerType.BLACK) {
+            return checker.getCurrCoor()[1] == 0;
+        }
+        else return checker.getCurrCoor()[1] == boardSize - 1;
+    }
+
+    public boolean tryMove(Checker checker, int[] newCoor) {
+        int[] currCoor = checker.getCurrCoor();
+        try {
+            if (checker.getType() == getWhosTurn() && getSquareAt(newCoor).canMoveTo()) {
+                if (isLegalMove(currCoor, newCoor)) {
+                    removeCheckerAt(currCoor);
+                    checker.setCurrCoor(newCoor);
+                    update();
+                    return true;
+                }
+                if (isLegalJump(currCoor, newCoor)) {
+                    capture(checker, newCoor);
+                    update();
+                    return true;
+                }
+            }
+        } catch (Exception e) { e.getMessage(); }
+        return false;
+    }
+
+    private boolean isLegalMove(int[] currCoor, int[] newCoor) {
+        Checker checker = getCheckerAt(currCoor);
+        int[] proposedMoveCoor = new int[]{newCoor[0] - currCoor[0], newCoor[1] - currCoor[1]};
+        try {
+            for (int[] moveCoor : checker.getMoveCoors()) {
+                if (Arrays.equals(moveCoor, proposedMoveCoor)) {
+                    return true;
+                }
+            }
+        } catch(Exception e) { e.getMessage(); }
+        return false;
+    }
+
+    private boolean isLegalJump(int[] currCoor, int[] newCoor) {
+        Checker checker = getCheckerAt(currCoor);
+        int[] proposedJumpCoor = new int[]{newCoor[0] - currCoor[0], newCoor[1] - currCoor[1]};
+        if(newCoor[0] >= 0 && newCoor[0] < boardSize && newCoor[1] >= 0 && newCoor[1] < boardSize) {
+            for (int[] jumpCoor : checker.getJumpCoors()) {
+                if (Arrays.equals(jumpCoor, proposedJumpCoor)) {
+                    Checker midChecker = getCheckerAt(new int[]{(currCoor[0] + newCoor[0]) / 2, (currCoor[1] + newCoor[1]) / 2});
+                    if (midChecker == null) {
+                        return false;
+                    }
+                    return (midChecker.getType() != checker.getType());
+                }
+            }
+        }
+        return false;
+    }
+
+    private void capture(Checker checker, int[] newCoor) {
+        int[] currCoor = checker.getCurrCoor();
+        removeCheckerAt(currCoor);
+        checker.setCurrCoor(newCoor);
+
+        int[] midCoor = new int[]{(currCoor[0] + newCoor[0])/2, (currCoor[1] + newCoor[1])/2};
+        if(getCheckerAt(midCoor).getKing()) {
+            regicide(getCheckerAt(midCoor), checker);
+        }
+        removeCheckerFromGame(getCheckerAt(midCoor));
+        removeCheckerAt(midCoor);
+
+        if(checker.getType() == CheckerType.BLACK) { incrementBlackPoints(); }
+        else if (checker.getType() == CheckerType.RED) { incrementRedPoints(); }
+    }
+
+//    private boolean tryForcedCapture() {
+//        ArrayList<Checker> checkers = null;
+//        if(state.getWhosTurn() == CheckerType.BLACK) { checkers = state.getBCheckers(); }
+//        else { checkers = state.getRCheckers(); }
+//
+//        HashMap<Checker, int[]> checkersAtRisk = getCheckersAtRisk(checkers);
+//
+//
+//
+//    }
+
+    public HashMap<Checker, int[]> getCheckersAtRisk() {
+        // Reset the risk of each checker in the game
+        for(Checker checker : getCheckers()) {
+            if(checker.isAtRisk()) { checker.removeAtRisk(); }
+        }
+
+        // Get an ArrayList of the current player's checkers
+        ArrayList<Checker> checkers = null;
+        if(getWhosTurn() == CheckerType.BLACK) { checkers = getBCheckers(); }
+        else { checkers = getRCheckers(); }
+
+        // checkersAtRisk holds all checkers that are at risk of being captured along with the coordinates of the
+        // checker that poses the risk to it.
+        HashMap<Checker, int[]> checkersAtRisk = new HashMap<>();
+
+        // Iterate through each checker & check whether they pose a risk of capture to any other checker.
+        for(Checker checker : checkers) {
+            int[] currCoor = checker.getCurrCoor();
+            for(int[] jumpCoor : checker.getJumpCoors()) {
+                int[] newCoor = new int[]{currCoor[0] + jumpCoor[0], currCoor[1] + jumpCoor[1]};
+                if(isLegalJump(currCoor, newCoor) && getSquareAt(newCoor).canMoveTo()) {
+                    Checker midChecker = getCheckerAt(new int[]{(currCoor[0] + newCoor[0]) / 2, (currCoor[1] + newCoor[1]) / 2});
+                    checkersAtRisk.put(midChecker, currCoor);
+
+                    // set the checker at risk of being captured to at risk - changes the outline of the checker
+                    midChecker.setAtRisk();
+                }
+            }
+        }
+        return checkersAtRisk;
+    }
+
     public boolean isComplete() {
-        return blackPoints == rCheckers.size() || redPoints == bCheckers.size();
+        return redLeft == 0 || blackLeft == 0;
+    }
+
+    public CheckerType winner() {
+        if(redLeft <= 0) { return CheckerType.RED; }
+        else if(blackLeft <= 0) { return CheckerType.BLACK; }
+        return null;
+    }
+
+    // Evaluation function quantifies red performance: the more black checkers captured & the more red kings, the higher
+    // the fitness of the AI.
+    public double evaluateFitness() {
+        return redLeft - blackLeft + (nRedKings * 0.5 - nBlackKings * 0.5);
+    }
+
+    public GameState getState() {
+        return this;
+    }
+
+    public void aiMove(GameState state) {
+        this.equals(state);
+        changeTurn();
     }
 }

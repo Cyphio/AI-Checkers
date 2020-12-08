@@ -26,7 +26,7 @@ public class GameGUI extends Application {
     private Group squareGroup = new Group();
     private Group checkerGroup = new Group();
 
-    private GameLogic gameLogic = null;
+    private GameState gameState = null;
 
     private Label turnLabel;
     private Label blackPointsLabel;
@@ -45,19 +45,6 @@ public class GameGUI extends Application {
         difficulty.getItems().addAll("Easy", "Regular", "Hard");
         difficulty.setValue("Regular");
 
-        Button load = new Button("Load");
-        load.setOnAction(e -> {
-            try {
-                GameLogic data = (GameLogic) ResourceManager.load("a.save");
-                this.gameLogic = data;
-//                displayGame();
-//                interact();
-
-            } catch (Exception error) {
-                System.out.println("Couldn't load: " + error.getMessage());
-            }
-        });
-
         Button generateNewGame = new Button("Generate Game");
         generateNewGame.setOnAction(e -> {
             primaryStage.setTitle("Checkers");
@@ -74,7 +61,7 @@ public class GameGUI extends Application {
         HBox h2 = new HBox();
         h2.setAlignment(Pos.CENTER);
         h2.setSpacing(5);
-        h2.getChildren().addAll(generateNewGame, load);
+        h2.getChildren().addAll(generateNewGame);
 
         VBox v = new VBox();
         v.setPadding(new Insets(25, 25, 25, 25));
@@ -115,11 +102,11 @@ public class GameGUI extends Application {
             }
         }
 
-        gameLogic = new GameLogic(boardSize, rCheckers, bCheckers, wSquares, bSquares);
+        gameState = new GameState(boardSize, rCheckers, bCheckers, wSquares, bSquares);
         UpdateBoard();
 
         Label turnMsg1 = new Label("It's currently");
-        turnLabel = new Label(gameLogic.getState().getWhosTurnName());
+        turnLabel = new Label(gameState.getState().getWhosTurnName());
         Label turnMsg2 = new Label("Player's turn");
 
         Label blackPointsMsg = new Label("Black Player's points: ");
@@ -136,15 +123,6 @@ public class GameGUI extends Application {
         redPointsLabel.setFont(new Font(fontSize));
 
         board.getChildren().addAll(squareGroup, checkerGroup);
-
-        Button save = new Button("Save");
-        save.setOnAction(e -> {
-            try {
-                ResourceManager.save(this.gameLogic, "a.save");
-            } catch (Exception error) {
-                System.out.println("Couldn't save: " + error.getMessage());
-            }
-        });
 
         HBox h1 = new HBox();
         h1.setPadding(new Insets(25, 25, 25, 25));
@@ -169,7 +147,7 @@ public class GameGUI extends Application {
         v.setPadding(new Insets(0, 25, 25, 25));
         v.setAlignment(Pos.CENTER);
         v.setSpacing(5);
-        v.getChildren().addAll(h1, h2, h3, save);
+        v.getChildren().addAll(h1, h2, h3);
 
         HBox h4 = new HBox();
         h4.setPadding(new Insets(25, 25, 25, 25));
@@ -188,11 +166,11 @@ public class GameGUI extends Application {
                     (int) (checker.getLayoutX() + SQUARESIZE / 2) / SQUARESIZE,
                     (int) (checker.getLayoutY() + SQUARESIZE / 2) / SQUARESIZE};
 
-            gameLogic.takeTurn(checker, newCoor);
+            gameState.takeTurn(checker, newCoor);
 
-            turnLabel.setText(gameLogic.getState().getWhosTurnName());
-            blackPointsLabel.setText(Integer.toString(gameLogic.getState().getBlackPoints()));
-            redPointsLabel.setText(Integer.toString(gameLogic.getState().getRedPoints()));
+            turnLabel.setText(gameState.getState().getWhosTurnName());
+            blackPointsLabel.setText(Integer.toString(gameState.getState().getBlackPoints()));
+            redPointsLabel.setText(Integer.toString(gameState.getState().getRedPoints()));
 
             UpdateBoard();
 
@@ -204,19 +182,19 @@ public class GameGUI extends Application {
 
     private void UpdateBoard() {
         squareGroup.getChildren().clear();
-        for(Square white : gameLogic.getState().getWSquares()) {
+        for(Square white : gameState.getState().getWSquares()) {
             squareGroup.getChildren().add(white);
         }
-        for(Square black : gameLogic.getState().getBSquares()) {
+        for(Square black : gameState.getState().getBSquares()) {
             squareGroup.getChildren().add(black);
         }
 
         checkerGroup.getChildren().clear();
-        for(Checker red : gameLogic.getState().getRCheckers()) {
+        for(Checker red : gameState.getState().getRCheckers()) {
             checkerGroup.getChildren().add(red);
             red.relocate(red.getCurrCoor()[0] * SQUARESIZE, red.getCurrCoor()[1] * SQUARESIZE);
         }
-        for(Checker black : gameLogic.getState().getBCheckers()) {
+        for(Checker black : gameState.getState().getBCheckers()) {
             checkerGroup.getChildren().add(black);
             black.relocate(black.getCurrCoor()[0] * SQUARESIZE, black.getCurrCoor()[1] * SQUARESIZE);
         }
