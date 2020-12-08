@@ -1,6 +1,11 @@
 package AI;
 
+import GUI.Checker;
+import GUI.CheckerType;
 import GUI.GameState;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Minimax {
 
@@ -20,6 +25,14 @@ public class Minimax {
             int[] bestMove = null;
         }
         else {
+
+        }
+        return null;
+    }
+
+    private ArrayList<HashMap<Checker, GameState>> getAllMoves(GameState position, CheckerType type) {
+        ArrayList<HashMap<Checker, GameState>> moves = null;
+        for(Checker checker : position.getCheckers(type)) {
 
         }
         return null;

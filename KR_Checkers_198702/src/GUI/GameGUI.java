@@ -173,8 +173,6 @@ public class GameGUI extends Application {
             redPointsLabel.setText(Integer.toString(gameState.getState().getRedPoints()));
 
             UpdateBoard();
-
-
         });
 
         return checker;
@@ -190,11 +188,11 @@ public class GameGUI extends Application {
         }
 
         checkerGroup.getChildren().clear();
-        for(Checker red : gameState.getState().getRCheckers()) {
+        for(Checker red : gameState.getCheckers(CheckerType.RED)) {
             checkerGroup.getChildren().add(red);
             red.relocate(red.getCurrCoor()[0] * SQUARESIZE, red.getCurrCoor()[1] * SQUARESIZE);
         }
-        for(Checker black : gameState.getState().getBCheckers()) {
+        for(Checker black : gameState.getCheckers(CheckerType.BLACK)) {
             checkerGroup.getChildren().add(black);
             black.relocate(black.getCurrCoor()[0] * SQUARESIZE, black.getCurrCoor()[1] * SQUARESIZE);
         }

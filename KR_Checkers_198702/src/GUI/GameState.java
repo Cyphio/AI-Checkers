@@ -56,11 +56,12 @@ public class GameState {
         update();
     }
 
-    public ArrayList<Checker> getRCheckers() { return rCheckers; }
+    public ArrayList<Checker> getCheckers(CheckerType type) {
+        if(type == CheckerType.BLACK) { return bCheckers; }
+        else { return rCheckers; }
+    }
 
-    public ArrayList<Checker> getBCheckers() { return bCheckers; }
-
-    public ArrayList<Checker> getCheckers() {
+    public ArrayList<Checker> getAllCheckers() {
         ArrayList<Checker> allCheckers = new ArrayList<>();
         allCheckers.addAll(rCheckers);
         allCheckers.addAll(bCheckers);
@@ -252,14 +253,12 @@ public class GameState {
 
     public HashMap<Checker, int[]> getCheckersAtRisk() {
         // Reset the risk of each checker in the game
-        for(Checker checker : getCheckers()) {
+        for(Checker checker : getAllCheckers()) {
             if(checker.isAtRisk()) { checker.removeAtRisk(); }
         }
 
         // Get an ArrayList of the current player's checkers
-        ArrayList<Checker> checkers = null;
-        if(getWhosTurn() == CheckerType.BLACK) { checkers = getBCheckers(); }
-        else { checkers = getRCheckers(); }
+        ArrayList<Checker> checkers = getCheckers(getWhosTurn());
 
         // checkersAtRisk holds all checkers that are at risk of being captured along with the coordinates of the
         // checker that poses the risk to it.
