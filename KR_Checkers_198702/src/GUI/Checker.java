@@ -10,6 +10,7 @@ public class Checker extends StackPane {
 
     private CheckerType type;
     private Color colour;
+    private double size;
     private int[] currCoor;
     private double[] mouseCoor;
     private boolean isKing;
@@ -59,22 +60,24 @@ public class Checker extends StackPane {
         else { return jumpCoors; }
     }
 
-    public void setKing() {
+    public void turnIntoKing() {
         isKing = true;
+        create(colour, Color.GOLD, currCoor, size);
     }
 
     public boolean getKing() {
         return isKing;
     }
 
-    public void create(Color mainColour, Color secColour, int[] coor, double size) {
-        colour = mainColour;
+    public void create(Color colour, Color secColour, int[] coor, double size) {
+        this.colour = colour;
+        this.size = size;
         currCoor = coor;
 
         relocate(SQUARESIZE + SQUARESIZE / 2, SQUARESIZE + SQUARESIZE / 2);
 
         Ellipse checkerPiece = new Ellipse(SQUARESIZE * size, SQUARESIZE * size);
-        checkerPiece.setFill(mainColour);
+        checkerPiece.setFill(colour);
         checkerPiece.setStroke(secColour);
         checkerPiece.setStrokeWidth(3);
 

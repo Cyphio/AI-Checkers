@@ -58,7 +58,7 @@ public class GameState {
         blackPoints++;
     }
 
-    public void nextTurn() {
+    public void endTurn() {
         if(whosTurn == CheckerType.BLACK) { whosTurn = CheckerType.RED; }
         else if(whosTurn == CheckerType.RED) { whosTurn = CheckerType.BLACK; }
     }

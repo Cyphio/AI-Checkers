@@ -188,8 +188,9 @@ public class GameGUI extends Application {
                     (int) (checker.getLayoutX() + SQUARESIZE / 2) / SQUARESIZE,
                     (int) (checker.getLayoutY() + SQUARESIZE / 2) / SQUARESIZE};
 
-            gameLogic.move(checker, newCoor);
-            gameLogic.checkCircumstances();
+            if(!gameLogic.tryForcedCapture()) {
+                gameLogic.move(checker, newCoor);
+            }
 
             turnLabel.setText(gameLogic.getState().getWhosTurnName());
             blackPointsLabel.setText(Integer.toString(gameLogic.getState().getBlackPoints()));

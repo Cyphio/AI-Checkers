@@ -16,12 +16,24 @@ public class GameLogic {
         state = new GameState(boardSize, rCheckers, bCheckers, wSquares, bSquares);
     }
 
-    public void checkCircumstances() {
-        tryForcedCapture();
-    }
-
     public GameState getState() {
         return state;
+    }
+
+    public void nextTurn(Checker checker, int[] newCoor) {
+        if(move(checker, newCoor)) {
+            state.update();
+        }
+        if(isAtBaseline(checker)) {
+            checker.turnIntoKing();
+        }
+    }
+
+    public boolean isAtBaseline(Checker checker) {
+        if(checker.getType() == CheckerType.BLACK) {
+            return checker.getCurrCoor()[1] == 0;
+        }
+        else return checker.getCurrCoor()[1] == boardSize - 1;
     }
 
     public boolean move(Checker checker, int[] newCoor) {
@@ -31,14 +43,10 @@ public class GameLogic {
                 if (isLegalMove(currCoor, newCoor)) {
                     state.removeCheckerAt(currCoor);
                     checker.setCurrCoor(newCoor);
-                    state.update();
-                    state.nextTurn();
                     return true;
                 }
                 if (isLegalJump(currCoor, newCoor)) {
                     capture(checker, newCoor);
-                    state.update();
-                    state.nextTurn();
                     return true;
                 }
             }
@@ -88,19 +96,20 @@ public class GameLogic {
         else if (checker.getColour() == Color.RED) { state.incrementRedPoints(); }
     }
 
-    private boolean tryForcedCapture() {
-        ArrayList<Checker> currCheckers = null;
-        if(state.getWhosTurn() == CheckerType.BLACK) { currCheckers = state.getBCheckers(); }
-        else { currCheckers = state.getRCheckers(); }
-        for(Checker checker : currCheckers) {
+    public boolean tryForcedCapture() {
+        ArrayList<Checker> checkers = null;
+        if(state.getWhosTurn() == CheckerType.BLACK) { checkers = state.getBCheckers(); }
+        else { checkers = state.getRCheckers(); }
+        for(Checker checker : checkers) {
             int[] currCoor = checker.getCurrCoor();
-            for (int[] jumpCoor : checker.getJumpCoors()) {
+            for(int[] jumpCoor : checker.getJumpCoors()) {
                 int[] newCoor = new int[]{currCoor[0] + jumpCoor[0], currCoor[1] + jumpCoor[1]};
-                if ((newCoor[0] >= 0 && newCoor[0] < boardSize - 1) && (newCoor[1] >= 0 && newCoor[1] < boardSize - 1)) {
-                    if (isLegalJump(currCoor, newCoor)) {
+                if((newCoor[0] >= 0 && newCoor[0] <= boardSize-1) && (newCoor[1] >= 0 && newCoor[0] <= boardSize-1)) {
+                    if(isLegalJump(currCoor, newCoor) && state.getSquareAt(newCoor).canMoveTo()) {
                         System.out.println("FORCED CAPTURE");
                         capture(checker, newCoor);
                         state.update();
+                        state.endTurn();
                         return true;
                     }
                 }
