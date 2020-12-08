@@ -37,7 +37,7 @@ public class GameGUI extends Application {
 
         Label boardSizeMsg = new Label("Board size: ");
         ChoiceBox<String> boardSize = new ChoiceBox<>();
-        boardSize.getItems().addAll( "8");
+        boardSize.getItems().addAll( "6", "8", "10");
         boardSize.setValue("8");
 
         Label difficultyMsg = new Label("Difficulty: ");
