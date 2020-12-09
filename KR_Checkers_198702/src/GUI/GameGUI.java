@@ -23,40 +23,67 @@ public class GameGUI extends Application {
     public static int WIDTH;
     public static int HEIGHT;
 
-    private Group squareGroup = new Group();
-    private Group checkerGroup = new Group();
+    private Stage window;
+    private Pane board;
 
-    private GameState gameState = null;
+    private Group squareGroup;
+    private Group checkerGroup;
 
     private Label turnLabel;
     private Label blackPointsLabel;
     private Label redPointsLabel;
 
+    private GameStateController controller;
+
     @Override
     public void start(Stage primaryStage) {
+        window = primaryStage;
 
         Label boardSizeMsg = new Label("Board size: ");
-        ChoiceBox<String> boardSize = new ChoiceBox<>();
-        boardSize.getItems().addAll( "6", "8", "10");
-        boardSize.setValue("8");
+        ChoiceBox<String> boardSizeChoice = new ChoiceBox<>();
+        boardSizeChoice.getItems().addAll( "6", "8", "10");
+        boardSizeChoice.setValue("8");
 
         Label difficultyMsg = new Label("Difficulty: ");
-        ChoiceBox<String> difficulty = new ChoiceBox<>();
-        difficulty.getItems().addAll("Easy", "Regular", "Hard");
-        difficulty.setValue("Regular");
+        ChoiceBox<String> difficultyChoice = new ChoiceBox<>();
+        difficultyChoice.getItems().addAll("Easy", "Regular", "Hard");
+        difficultyChoice.setValue("Regular");
 
         Button generateNewGame = new Button("Generate Game");
         generateNewGame.setOnAction(e -> {
-            primaryStage.setTitle("Checkers");
-            primaryStage.setScene(new Scene(createGameContent(Integer.valueOf(boardSize.getValue()))));
-            primaryStage.show();
+            int boardSize = Integer.valueOf(boardSizeChoice.getValue());
+            WIDTH = boardSize;
+            HEIGHT = boardSize;
+            ArrayList<Checker> rCheckers = new ArrayList();
+            ArrayList<Checker> bCheckers = new ArrayList();
+            ArrayList<Square> wSquares = new ArrayList();
+            ArrayList<Square> bSquares = new ArrayList();
+            for(int i = 0; i< HEIGHT; i++) {
+                for(int j = 0; j< WIDTH; j++) {
+                    if((i+j)%2 == 0) {
+                        wSquares.add(new Square(SquareType.WHITE, new int[]{i, j}));
+                    }
+                    else {
+                        bSquares.add(new Square(SquareType.BLACK, new int[]{i, j}));
+                    }
+                    if(j <= (boardSize/2)-2 && (i+j)%2 != 0) {
+                        rCheckers.add(InitChecker(CheckerType.RED, new int[]{i, j}, 0.4));
+                    }
+                    else if(j >= (boardSize/2)+1 && (i+j)%2 != 0) {
+                        bCheckers.add(InitChecker(CheckerType.BLACK, new int[]{i, j}, 0.4));
+                    }
+                }
+            }
+            window.setTitle("Checkers");
+            window.setScene(new Scene(createGameContent(new GameState(boardSize, rCheckers, bCheckers, wSquares, bSquares))));
+            window.show();
         });
 
         HBox h = new HBox();
         h.setPadding(new Insets(0, 25, 25, 25));
         h.setAlignment(Pos.CENTER);
         h.setSpacing(5);
-        h.getChildren().addAll(difficultyMsg, difficulty, boardSizeMsg, boardSize);
+        h.getChildren().addAll(difficultyMsg, difficultyChoice, boardSizeMsg, boardSizeChoice);
 
         HBox h2 = new HBox();
         h2.setAlignment(Pos.CENTER);
@@ -68,51 +95,32 @@ public class GameGUI extends Application {
         v.setAlignment(Pos.CENTER);
         v.getChildren().addAll(h, h2);
 
-        primaryStage.setTitle("Checkers Main Menu");
-        primaryStage.setScene(new Scene(v, 400, 300));
-        primaryStage.show();
+        window.setTitle("Checkers Main Menu");
+        window.setScene(new Scene(v, 400, 300));
+        window.show();
     }
 
-    private Parent createGameContent(int boardSize) {
-        this.WIDTH = boardSize;
-        this.HEIGHT = boardSize;
+    private Parent createGameContent(GameState state) {
         int fontSize = 15;
 
-        Pane board = new Pane();
+        squareGroup = new Group();
+        checkerGroup = new Group();
+
+        board = new Pane();
         board.setPrefSize(WIDTH * SQUARESIZE, HEIGHT * SQUARESIZE);
+        board.getChildren().addAll(squareGroup, checkerGroup);
 
-        ArrayList<Checker> rCheckers = new ArrayList();
-        ArrayList<Checker> bCheckers = new ArrayList();
-        ArrayList<Square> wSquares = new ArrayList();
-        ArrayList<Square> bSquares = new ArrayList();
-        for(int i = 0; i< HEIGHT; i++) {
-            for(int j = 0; j< WIDTH; j++) {
-                if((i+j)%2 == 0) {
-                    wSquares.add(new Square(SquareType.WHITE, new int[]{i, j}));
-                }
-                else {
-                    bSquares.add(new Square(SquareType.BLACK, new int[]{i, j}));
-                }
-                if(j <= (boardSize/2)-2 && (i+j)%2 != 0) {
-                    rCheckers.add(InitChecker(CheckerType.RED, new int[]{i, j}, 0.4));
-                }
-                else if(j >= (boardSize/2)+1 && (i+j)%2 != 0) {
-                    bCheckers.add(InitChecker(CheckerType.BLACK, new int[]{i, j}, 0.4));
-                }
-            }
-        }
-
-        gameState = new GameState(boardSize, rCheckers, bCheckers, wSquares, bSquares);
-        UpdateBoard();
+        controller = new GameStateController(state);
 
         Label turnMsg1 = new Label("It's currently");
-        turnLabel = new Label(gameState.getWhosTurnName());
+        turnLabel = new Label(state.getWhosTurnName());
         Label turnMsg2 = new Label("Player's turn");
 
         Label blackPointsMsg = new Label("Black Player's points: ");
-        blackPointsLabel = new Label("0");
+        blackPointsLabel = new Label(Integer.toString(state.getBlackPoints()));
+
         Label redPointsMsg = new Label("Red Player's points: ");
-        redPointsLabel = new Label("0");
+        redPointsLabel = new Label(Integer.toString(state.getRedPoints()));
 
         turnMsg1.setFont(new Font(fontSize));
         turnLabel.setFont(new Font(fontSize));
@@ -122,7 +130,24 @@ public class GameGUI extends Application {
         redPointsMsg.setFont(new Font(fontSize));
         redPointsLabel.setFont(new Font(fontSize));
 
-        board.getChildren().addAll(squareGroup, checkerGroup);
+
+        for(Square white : state.getWSquares()) {
+            squareGroup.getChildren().add(white);
+            white.relocate(white.getCoor()[0] * SQUARESIZE, white.getCoor()[1] * SQUARESIZE);
+        }
+        for(Square black : state.getBSquares()) {
+            squareGroup.getChildren().add(black);
+            black.relocate(black.getCoor()[0] * SQUARESIZE, black.getCoor()[1] * SQUARESIZE);
+        }
+
+        for(Checker red : state.getCheckers(CheckerType.RED)) {
+            checkerGroup.getChildren().add(red);
+            red.relocate(red.getCurrCoor()[0] * SQUARESIZE, red.getCurrCoor()[1] * SQUARESIZE);
+        }
+        for(Checker black : state.getCheckers(CheckerType.BLACK)) {
+            checkerGroup.getChildren().add(black);
+            black.relocate(black.getCurrCoor()[0] * SQUARESIZE, black.getCurrCoor()[1] * SQUARESIZE);
+        }
 
         HBox h1 = new HBox();
         h1.setPadding(new Insets(25, 25, 25, 25));
@@ -166,43 +191,24 @@ public class GameGUI extends Application {
                     (int) (checker.getLayoutX() + SQUARESIZE / 2) / SQUARESIZE,
                     (int) (checker.getLayoutY() + SQUARESIZE / 2) / SQUARESIZE};
 
-            gameState.equals(gameState.takeTurn(checker, newCoor));
+            controller.getState().takeTurn(checker, newCoor);
+            controller.makeAIMove(3);
+            System.out.println("AFTER AI: " + controller.getState().getWhosTurn());
 
-            for(Checker checker1 : gameState.getCheckers(CheckerType.RED)) {
-                for(int i : checker1.getCurrCoor()) {
-                    System.out.println(i);
-                }
-                System.out.println();
-            }
+            window.setScene(new Scene(createGameContent(controller.getState())));
 
-            turnLabel.setText(gameState.getWhosTurnName());
-            blackPointsLabel.setText(Integer.toString(gameState.getBlackPoints()));
-            redPointsLabel.setText(Integer.toString(gameState.getRedPoints()));
-
-            UpdateBoard();
+//            for(Checker checker_ : controller.getState().getCheckers(CheckerType.BLACK)) {
+//                for(int i : checker_.getCurrCoor()) {
+//                    System.out.println(i);
+//                }
+//            }
         });
 
         return checker;
     }
 
-    private void UpdateBoard() {
-        squareGroup.getChildren().clear();
-        for(Square white : gameState.getWSquares()) {
-            squareGroup.getChildren().add(white);
-        }
-        for(Square black : gameState.getBSquares()) {
-            squareGroup.getChildren().add(black);
-        }
+    public void UpdateGUI() {
 
-        checkerGroup.getChildren().clear();
-        for(Checker red : gameState.getCheckers(CheckerType.RED)) {
-            checkerGroup.getChildren().add(red);
-            red.relocate(red.getCurrCoor()[0] * SQUARESIZE, red.getCurrCoor()[1] * SQUARESIZE);
-        }
-        for(Checker black : gameState.getCheckers(CheckerType.BLACK)) {
-            checkerGroup.getChildren().add(black);
-            black.relocate(black.getCurrCoor()[0] * SQUARESIZE, black.getCurrCoor()[1] * SQUARESIZE);
-        }
     }
 
     public static void main(String[] args) {

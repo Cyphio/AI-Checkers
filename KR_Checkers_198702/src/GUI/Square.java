@@ -40,4 +40,6 @@ public class Square extends Rectangle implements Serializable {
     public boolean canMoveTo() {
         return canMoveTo;
     }
+
+
 }

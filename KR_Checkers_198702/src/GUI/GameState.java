@@ -1,11 +1,8 @@
 package GUI;
 
-import AI.Minimax;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class GameState implements Serializable {
 
@@ -29,8 +26,6 @@ public class GameState implements Serializable {
 
     private CheckerType whosTurn;
 
-    private Minimax minimax;
-
     public GameState(int boardSize, ArrayList<Checker> rCheckers, ArrayList<Checker> bCheckers, ArrayList<Square> wSquares, ArrayList<Square> bSquares) {
         this.boardSize = boardSize;
 
@@ -47,8 +42,6 @@ public class GameState implements Serializable {
         blackPoints = 0;
 
         whosTurn = CheckerType.BLACK;
-
-        minimax = new Minimax();
 
         checkerState = new Checker[rCheckers.size()][bCheckers.size()];
         squareState = new Square[wSquares.size()][bSquares.size()];
@@ -156,26 +149,6 @@ public class GameState implements Serializable {
         return squareState[coor[0]][coor[1]];
     }
 
-    public GameState takeTurn(Checker checker, int[] newCoor) {
-        if (tryMove(checker, newCoor)) {
-            if (isAtBaseline(checker)) {
-                makeKing(checker);
-            }
-
-            changeTurn();
-
-            getCheckersAtRisk();
-
-            if(isComplete()) {
-                System.out.println(getWhosTurnName() + " wins!!!");
-            }
-        }
-        if(whosTurn == CheckerType.RED) {
-            return minimax.getAiState(this, 2, true);
-        }
-        return this;
-    }
-
     public boolean isAtBaseline(Checker checker) {
         if(checker.getType() == CheckerType.BLACK) {
             return checker.getCurrCoor()[1] == 0;
@@ -183,10 +156,22 @@ public class GameState implements Serializable {
         else return checker.getCurrCoor()[1] == boardSize - 1;
     }
 
+    public void takeTurn(Checker checker, int[] newCoor) {
+        if (tryMove(checker, newCoor)) {
+            if (isAtBaseline(checker)) {
+                makeKing(checker);
+            }
+
+            changeTurn();
+
+            if(isComplete()) {
+                System.out.println(getWhosTurnName() + " wins!!!");
+            }
+        }
+    }
+
     public boolean tryMove(Checker checker, int[] newCoor) {
         int[] currCoor = checker.getCurrCoor();
-        System.out.println("CURR GO: " + getWhosTurn());
-        System.out.println("CURR TYPE " + checker.getType());
         try {
             if (checker.getType() == getWhosTurn() && getSquareAt(newCoor).canMoveTo()) {
                 if (isLegalMove(currCoor, newCoor)) {
@@ -251,46 +236,35 @@ public class GameState implements Serializable {
         else if (checker.getType() == CheckerType.RED) { incrementRedPoints(); }
     }
 
-//    private boolean tryForcedCapture() {
-//        ArrayList<Checker> checkers = null;
-//        if(state.getWhosTurn() == CheckerType.BLACK) { checkers = state.getBCheckers(); }
-//        else { checkers = state.getRCheckers(); }
+//    public HashMap<Checker, int[]> getCheckersAtRisk() {
+//        // Reset the risk of each checker in the game
+//        for(Checker checker : getAllCheckers()) {
+//            if(checker.isAtRisk()) { checker.removeAtRisk(); }
+//        }
 //
-//        HashMap<Checker, int[]> checkersAtRisk = getCheckersAtRisk(checkers);
+//        // Get an ArrayList of the current player's checkers
+//        ArrayList<Checker> checkers = getCheckers(getWhosTurn());
 //
+//        // checkersAtRisk holds all checkers that are at risk of being captured along with the coordinates of the
+//        // checker that poses the risk to it.
+//        HashMap<Checker, int[]> checkersAtRisk = new HashMap<>();
 //
+//        // Iterate through each checker & check whether they pose a risk of capture to any other checker.
+//        for(Checker checker : checkers) {
+//            int[] currCoor = checker.getCurrCoor();
+//            for(int[] jumpCoor : checker.getJumpCoors()) {
+//                int[] newCoor = new int[]{currCoor[0] + jumpCoor[0], currCoor[1] + jumpCoor[1]};
+//                if(isLegalJump(currCoor, newCoor) && getSquareAt(newCoor).canMoveTo()) {
+//                    Checker midChecker = getCheckerAt(new int[]{(currCoor[0] + newCoor[0]) / 2, (currCoor[1] + newCoor[1]) / 2});
+//                    checkersAtRisk.put(midChecker, currCoor);
 //
+//                    // set the checker at risk of being captured to at risk - changes the outline of the checker
+//                    midChecker.setAtRisk();
+//                }
+//            }
+//        }
+//        return checkersAtRisk;
 //    }
-
-    public HashMap<Checker, int[]> getCheckersAtRisk() {
-        // Reset the risk of each checker in the game
-        for(Checker checker : getAllCheckers()) {
-            if(checker.isAtRisk()) { checker.removeAtRisk(); }
-        }
-
-        // Get an ArrayList of the current player's checkers
-        ArrayList<Checker> checkers = getCheckers(getWhosTurn());
-
-        // checkersAtRisk holds all checkers that are at risk of being captured along with the coordinates of the
-        // checker that poses the risk to it.
-        HashMap<Checker, int[]> checkersAtRisk = new HashMap<>();
-
-        // Iterate through each checker & check whether they pose a risk of capture to any other checker.
-        for(Checker checker : checkers) {
-            int[] currCoor = checker.getCurrCoor();
-            for(int[] jumpCoor : checker.getJumpCoors()) {
-                int[] newCoor = new int[]{currCoor[0] + jumpCoor[0], currCoor[1] + jumpCoor[1]};
-                if(isLegalJump(currCoor, newCoor) && getSquareAt(newCoor).canMoveTo()) {
-                    Checker midChecker = getCheckerAt(new int[]{(currCoor[0] + newCoor[0]) / 2, (currCoor[1] + newCoor[1]) / 2});
-                    checkersAtRisk.put(midChecker, currCoor);
-
-                    // set the checker at risk of being captured to at risk - changes the outline of the checker
-                    midChecker.setAtRisk();
-                }
-            }
-        }
-        return checkersAtRisk;
-    }
 
     public ArrayList<int[]> getAllValidMoves(Checker checker) {
         ArrayList<int[]> validMoves = new ArrayList<>();
@@ -332,14 +306,5 @@ public class GameState implements Serializable {
     // the fitness of the AI.
     public double evaluateFitness() {
         return redLeft - blackLeft + (nRedKings * 0.5 - nBlackKings * 0.5);
-    }
-
-    public GameState getState() {
-        return this;
-    }
-
-    public void aiMove(GameState state) {
-        this.equals(state);
-        changeTurn();
     }
 }
