@@ -164,13 +164,13 @@ public class GameState implements Serializable {
 
             changeTurn();
 
-            HashMap<Checker, int[]> checkersAtRisk =  getCheckersAtRisk();
+            getCheckersAtRisk();
 
             if(isComplete()) {
                 System.out.println(getWhosTurnName() + " wins!!!");
             }
         }
-        if(getWhosTurn() == CheckerType.RED) {
+        if(whosTurn == CheckerType.RED) {
             return minimax.getAiState(this, 2, true);
         }
         return this;
@@ -185,6 +185,8 @@ public class GameState implements Serializable {
 
     public boolean tryMove(Checker checker, int[] newCoor) {
         int[] currCoor = checker.getCurrCoor();
+        System.out.println("CURR GO: " + getWhosTurn());
+        System.out.println("CURR TYPE " + checker.getType());
         try {
             if (checker.getType() == getWhosTurn() && getSquareAt(newCoor).canMoveTo()) {
                 if (isLegalMove(currCoor, newCoor)) {
@@ -292,6 +294,7 @@ public class GameState implements Serializable {
 
     public ArrayList<int[]> getAllValidMoves(Checker checker) {
         ArrayList<int[]> validMoves = new ArrayList<>();
+
         int[] currCoor = checker.getCurrCoor();
 
         for (int[] moveCoor : checker.getMoveCoors()) {

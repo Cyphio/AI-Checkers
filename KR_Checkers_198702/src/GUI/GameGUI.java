@@ -106,7 +106,7 @@ public class GameGUI extends Application {
         UpdateBoard();
 
         Label turnMsg1 = new Label("It's currently");
-        turnLabel = new Label(gameState.getState().getWhosTurnName());
+        turnLabel = new Label(gameState.getWhosTurnName());
         Label turnMsg2 = new Label("Player's turn");
 
         Label blackPointsMsg = new Label("Black Player's points: ");
@@ -166,11 +166,18 @@ public class GameGUI extends Application {
                     (int) (checker.getLayoutX() + SQUARESIZE / 2) / SQUARESIZE,
                     (int) (checker.getLayoutY() + SQUARESIZE / 2) / SQUARESIZE};
 
-            gameState = gameState.takeTurn(checker, newCoor);
+            gameState.equals(gameState.takeTurn(checker, newCoor));
 
-            turnLabel.setText(gameState.getState().getWhosTurnName());
-            blackPointsLabel.setText(Integer.toString(gameState.getState().getBlackPoints()));
-            redPointsLabel.setText(Integer.toString(gameState.getState().getRedPoints()));
+            for(Checker checker1 : gameState.getCheckers(CheckerType.RED)) {
+                for(int i : checker1.getCurrCoor()) {
+                    System.out.println(i);
+                }
+                System.out.println();
+            }
+
+            turnLabel.setText(gameState.getWhosTurnName());
+            blackPointsLabel.setText(Integer.toString(gameState.getBlackPoints()));
+            redPointsLabel.setText(Integer.toString(gameState.getRedPoints()));
 
             UpdateBoard();
         });
@@ -180,10 +187,10 @@ public class GameGUI extends Application {
 
     private void UpdateBoard() {
         squareGroup.getChildren().clear();
-        for(Square white : gameState.getState().getWSquares()) {
+        for(Square white : gameState.getWSquares()) {
             squareGroup.getChildren().add(white);
         }
-        for(Square black : gameState.getState().getBSquares()) {
+        for(Square black : gameState.getBSquares()) {
             squareGroup.getChildren().add(black);
         }
 
@@ -196,7 +203,6 @@ public class GameGUI extends Application {
             checkerGroup.getChildren().add(black);
             black.relocate(black.getCurrCoor()[0] * SQUARESIZE, black.getCurrCoor()[1] * SQUARESIZE);
         }
-
     }
 
     public static void main(String[] args) {

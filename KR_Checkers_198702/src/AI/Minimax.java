@@ -49,8 +49,9 @@ public class Minimax implements Serializable {
         ArrayList<GameState> moveStates = new ArrayList<>();
         for(Checker checker : state.getCheckers(type)) {
             ArrayList<int[]> validMoves = state.getAllValidMoves(checker);
+            System.out.println("SIZE: " + validMoves.size());
             for(int[] move : validMoves) {
-                GameState tempCopy = (GameState)  deepCopy(state);
+                GameState tempCopy = (GameState) deepCopy(state);
                 GameState newState = simulateMove(checker, move, tempCopy);
                 moveStates.add(newState);
             }
@@ -58,9 +59,13 @@ public class Minimax implements Serializable {
         return moveStates;
     }
 
-    private GameState simulateMove(Checker checker, int[] move, GameState stateCopy) {
-        stateCopy.tryMove(checker, move);
-        return stateCopy;
+    private GameState simulateMove(Checker checker, int[] move, GameState tempCopy) {
+        int[] newCoor = new int[]{checker.getCurrCoor()[0] + move[0], checker.getCurrCoor()[1] + move[1]};
+        for(int i : newCoor) {
+            System.out.println("I: " + i);
+        }
+        System.out.println(tempCopy.tryMove(checker, newCoor));
+        return tempCopy;
     }
 
     /**
