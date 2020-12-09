@@ -216,8 +216,6 @@ public class GameGUI extends Application {
                     (int) (checker.getLayoutY() + SQUARESIZE / 2) / SQUARESIZE};
 
             controller.getState().takeTurn(checker, newCoor);
-            if(controller.getState().isComplete()) { AlertBox.display("Congratulations", window); }
-
 
             if (controller.getState().getWhosTurn() == CheckerType.RED) {
                 if(!playAgainstAI.isSelected()) {
@@ -233,8 +231,12 @@ public class GameGUI extends Application {
                     controller.makeAIMove(3);
                 }
             }
-            if(controller.getState().isComplete()) { AlertBox.display("Commiserations", window); }
+
             updateGameContent(controller.getState());
+
+            if(controller.getState().isComplete()) {
+                AlertBox.display("GAME OVER", window);
+            }
         });
 
         checker.setOnMousePressed(e -> {
