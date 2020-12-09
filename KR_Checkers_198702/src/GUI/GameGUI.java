@@ -147,9 +147,10 @@ public class GameGUI extends Application {
 
         board.getChildren().addAll(squareGroup, checkerGroup);
 
-//        CheckBox assistCheckBox = new CheckBox("Assistance");
-//        if(assistCheckBox.isSelected()) { controller.getState().markCheckersAtRisk(); }
-//        else { controller.getState().unMarkCheckersAtRisk(); }
+        Button helpButton = new Button("Help");
+        helpButton.setOnMousePressed(e -> {
+            AlertBox.helpBox();
+        });
 
         HBox h1 = new HBox();
         h1.setPadding(new Insets(25, 25, 25, 25));
@@ -174,7 +175,7 @@ public class GameGUI extends Application {
         v.setPadding(new Insets(0, 25, 25, 25));
         v.setAlignment(Pos.CENTER);
         v.setSpacing(5);
-        v.getChildren().addAll(h1, h2, h3);
+        v.getChildren().addAll(h1, h2, h3, helpButton);
 
         HBox h4 = new HBox();
         h4.setPadding(new Insets(25, 25, 25, 25));
@@ -220,8 +221,6 @@ public class GameGUI extends Application {
 
             updateGameContent(controller.getState());
 
-            //try { Thread.sleep(500); } catch(Exception exp) { exp.getMessage(); }
-
             if (controller.getState().getWhosTurn() == CheckerType.RED) {
                 if(!playAgainstAI.isSelected()) {
                     controller.makeAIMove(0);
@@ -230,11 +229,9 @@ public class GameGUI extends Application {
                     controller.makeAIMove(1);
                 }
                 else if (difficultyChoice.getValue().equals("Regular")) {
-                    //controller.makeAIMove((int)Math.pow(controller.getState().getBoardSize(), 2) / 2);
                     controller.makeAIMove(3);
                 }
                 else if (difficultyChoice.getValue().equals("Hard")) {
-                    //controller.makeAIMove((int)Math.pow(controller.getState().getBoardSize(), 2));
                     controller.makeAIMove(4);
                 }
             }
@@ -242,7 +239,7 @@ public class GameGUI extends Application {
             updateGameContent(controller.getState());
 
             if(controller.getState().isComplete()) {
-                AlertBox.display("GAME OVER", window);
+                AlertBox.endOfGameBox("GAME OVER", window);
             }
         });
 

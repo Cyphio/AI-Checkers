@@ -299,11 +299,20 @@ public class GameState implements Serializable {
     }
 
     public boolean isComplete() {
-        return redLeft == 0 || blackLeft == 0;
+        return redLeft == 0 || blackLeft == 0 || isTrapped();
+    }
+
+    public boolean isTrapped() {
+        for(Checker checker : getCheckers(getWhosTurn())) {
+            if(getAllValidMoves(checker).size() != 0) { return false; };
+        }
+        return true;
     }
 
     public CheckerType winner() {
-        if(redLeft <= 0) { return CheckerType.RED; }
+        if(isTrapped() && getWhosTurn() == CheckerType.BLACK) { return CheckerType.RED; }
+        else if(isTrapped() && getWhosTurn() == CheckerType.RED) { return CheckerType.BLACK; }
+        else if(redLeft <= 0) { return CheckerType.RED; }
         else if(blackLeft <= 0) { return CheckerType.BLACK; }
         return null;
     }
