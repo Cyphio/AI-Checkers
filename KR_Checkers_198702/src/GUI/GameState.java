@@ -57,6 +57,10 @@ public class GameState implements Serializable {
         update();
     }
 
+    public int getBoardSize() {
+        return boardSize;
+    }
+
     public ArrayList<Checker> getCheckers(CheckerType type) {
         if(type == CheckerType.BLACK) { return bCheckers; }
         else { return rCheckers; }
@@ -68,10 +72,6 @@ public class GameState implements Serializable {
         allCheckers.addAll(bCheckers);
         return allCheckers;
     }
-
-    public ArrayList<Square> getWSquares() { return wSquares; }
-
-    public ArrayList<Square> getBSquares() { return bSquares; }
 
     public int getRedPoints() { return redPoints; }
 
@@ -162,10 +162,6 @@ public class GameState implements Serializable {
                 makeKing(checker);
             }
 
-            if(isComplete()) {
-                System.out.println(getWhosTurnName() + " wins!!!");
-            }
-
             changeTurn();
         }
     }
@@ -235,6 +231,23 @@ public class GameState implements Serializable {
         if(checker.getType() == CheckerType.BLACK) { incrementBlackPoints(); }
         else if (checker.getType() == CheckerType.RED) { incrementRedPoints(); }
     }
+
+//    private boolean canForceCapture() {
+//        ArrayList<Checker> currCheckers = getCheckers(getWhosTurn());
+//        for(Checker checker : currCheckers) {
+//            ArrayList<int[]> moves = getAllValidMoves(checker);
+//            for (int[] move : moves) {
+//                int[] newCoor = new int[]{checker.getCurrCoor()[0] + move[0], checker.getCurrCoor()[1] + move[1]};
+//                if (newCoor[0] > 0 && newCoor[0] < boardSize - 1 && newCoor[1] > 0 && newCoor[1] < boardSize - 1) {
+//                    if (isLegalJump(checker.getCurrCoor(), newCoor) && getSquareAt(newCoor).canMoveTo()) {
+//                        capture(checker, newCoor);
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
 //    public void markCheckersAtRisk() {
 //        // Iterate through each checker & check whether they pose a risk of capture to any other checker.

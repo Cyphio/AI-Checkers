@@ -43,6 +43,7 @@ public class GameGUI extends Application {
 
         Label competitionMsg = new Label("Play against AI: ");
         playAgainstAI = new CheckBox();
+        playAgainstAI.setSelected(true);
 
         Label difficultyMsg = new Label("Difficulty: ");
         difficultyChoice = new ChoiceBox<>();
@@ -217,6 +218,10 @@ public class GameGUI extends Application {
 
             controller.getState().takeTurn(checker, newCoor);
 
+            updateGameContent(controller.getState());
+
+            //try { Thread.sleep(500); } catch(Exception exp) { exp.getMessage(); }
+
             if (controller.getState().getWhosTurn() == CheckerType.RED) {
                 if(!playAgainstAI.isSelected()) {
                     controller.makeAIMove(0);
@@ -225,10 +230,12 @@ public class GameGUI extends Application {
                     controller.makeAIMove(1);
                 }
                 else if (difficultyChoice.getValue().equals("Regular")) {
-                    controller.makeAIMove(2);
+                    //controller.makeAIMove((int)Math.pow(controller.getState().getBoardSize(), 2) / 2);
+                    controller.makeAIMove(3);
                 }
                 else if (difficultyChoice.getValue().equals("Hard")) {
-                    controller.makeAIMove(3);
+                    //controller.makeAIMove((int)Math.pow(controller.getState().getBoardSize(), 2));
+                    controller.makeAIMove(4);
                 }
             }
 

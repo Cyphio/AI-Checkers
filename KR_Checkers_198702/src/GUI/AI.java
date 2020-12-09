@@ -6,14 +6,11 @@ public class AI {
 
     private DeepCopy dc;
 
-    private int alpha;
-    private int beta;
-
     public AI() {
         dc = new DeepCopy();
     }
 
-    public GameState miniMax(GameState state, int depth, boolean maxPlayer) {
+    public GameState miniMax(GameState state, int depth, double alpha, double beta, boolean maxPlayer) {
         // Base case, if depth of tree is 0, or there is a winner, return the GameState object at that tree level
         if(depth == 0 || state.winner() != null) {
             return state;
@@ -24,10 +21,16 @@ public class AI {
             double maxEval = Double.NEGATIVE_INFINITY;
             GameState bestMove = null;
             for(GameState move : getAllMoves(state, CheckerType.RED)) {
-                double eval = miniMax(move, depth-1, false).evaluateFitness();
-                if(eval > maxEval) {
+                double eval = miniMax(move, depth-1, alpha, beta, false).evaluateFitness();
+                if(eval >= maxEval) {
                     maxEval = eval;
                     bestMove = move;
+                }
+                if(alpha >= maxEval) {
+                    alpha = maxEval;
+                }
+                if(alpha >= beta) {
+                    break;
                 }
             }
             return bestMove;
@@ -36,10 +39,16 @@ public class AI {
             double minEval = Double.POSITIVE_INFINITY;
             GameState bestMove = null;
             for(GameState move : getAllMoves(state, CheckerType.BLACK)) {
-                double eval = miniMax(move, depth-1, true).evaluateFitness();
-                if(eval < minEval) {
+                double eval = miniMax(move, depth-1, alpha, beta, true).evaluateFitness();
+                if(eval <= minEval) {
                     minEval = eval;
                     bestMove = move;
+                }
+                if(beta <= minEval) {
+                    beta = minEval;
+                }
+                if(alpha >= beta) {
+                    break;
                 }
             }
             return bestMove;

@@ -16,7 +16,7 @@ public class GameStateController {
 
     public void makeAIMove(int depth) {
         if(!state.isComplete()) {
-            state = AI.miniMax(state, depth, true);
+            state = AI.miniMax(state, depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true);
         }
     }
 }
