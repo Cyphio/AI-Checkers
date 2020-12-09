@@ -1,10 +1,11 @@
 package GUI;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class GameState {
+public class GameState implements Serializable {
 
     private final int boardSize;
 
@@ -53,6 +54,7 @@ public class GameState {
             int[] coor = black.getCoor();
             squareState[coor[0]][coor[1]] = black;
         }
+
         update();
     }
 
@@ -162,7 +164,7 @@ public class GameState {
 //            }
 
             if(isComplete()) {
-                System.out.println(getWhosTurnName() + "wins!!!");
+                System.out.println(getWhosTurnName() + " wins!!!");
             }
         }
     }
@@ -279,6 +281,27 @@ public class GameState {
             }
         }
         return checkersAtRisk;
+    }
+
+    public ArrayList<int[]> getAllValidMoves(Checker checker) {
+        ArrayList<int[]> validMoves = new ArrayList<>();
+        int[] currCoor = checker.getCurrCoor();
+
+        for (int[] moveCoor : checker.getMoveCoors()) {
+            int[] newCoor = new int[]{currCoor[0] + moveCoor[0], currCoor[1] + moveCoor[1]};
+            if (isLegalMove(currCoor, newCoor) && getSquareAt(newCoor).canMoveTo()) {
+                validMoves.add(moveCoor);
+            }
+        }
+
+        for (int[] jumpCoor : checker.getJumpCoors()) {
+            int[] newCoor = new int[]{currCoor[0] + jumpCoor[0], currCoor[1] + jumpCoor[1]};
+            if (isLegalJump(currCoor, newCoor) && getSquareAt(newCoor).canMoveTo()) {
+                validMoves.add(jumpCoor);
+            }
+        }
+
+        return validMoves;
     }
 
     public boolean isComplete() {
