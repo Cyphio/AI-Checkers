@@ -4,14 +4,16 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -24,30 +26,33 @@ public class GameGUI extends Application {
     public static int HEIGHT;
 
     private Stage window;
-    private Pane board;
 
-    private Group squareGroup;
-    private Group checkerGroup;
+    private Group squareGroup = new Group();;
 
     private Label turnLabel;
     private Label blackPointsLabel;
     private Label redPointsLabel;
 
     private GameStateController controller;
+    private ChoiceBox<Object> difficultyChoice;
+    private CheckBox playAgainstAI;
 
     @Override
     public void start(Stage primaryStage) {
         window = primaryStage;
 
+        Label competitionMsg = new Label("Play against AI: ");
+        playAgainstAI = new CheckBox();
+
+        Label difficultyMsg = new Label("Difficulty: ");
+        difficultyChoice = new ChoiceBox<>();
+        difficultyChoice.getItems().addAll("Easy", "Regular", "Hard");
+        difficultyChoice.setValue("Regular");
+
         Label boardSizeMsg = new Label("Board size: ");
         ChoiceBox<String> boardSizeChoice = new ChoiceBox<>();
         boardSizeChoice.getItems().addAll( "6", "8", "10");
         boardSizeChoice.setValue("8");
-
-        Label difficultyMsg = new Label("Difficulty: ");
-        ChoiceBox<String> difficultyChoice = new ChoiceBox<>();
-        difficultyChoice.getItems().addAll("Easy", "Regular", "Hard");
-        difficultyChoice.setValue("Regular");
 
         Button generateNewGame = new Button("Generate Game");
         generateNewGame.setOnAction(e -> {
@@ -61,34 +66,38 @@ public class GameGUI extends Application {
             for(int i = 0; i< HEIGHT; i++) {
                 for(int j = 0; j< WIDTH; j++) {
                     if((i+j)%2 == 0) {
-                        wSquares.add(new Square(SquareType.WHITE, new int[]{i, j}));
+                        Square whiteSq = new Square(SquareType.WHITE, new int[]{i, j});
+                        wSquares.add(whiteSq);
+                        squareGroup.getChildren().add(whiteSq);
                     }
                     else {
-                        bSquares.add(new Square(SquareType.BLACK, new int[]{i, j}));
+                        Square blackSq = new Square(SquareType.BLACK, new int[]{i, j});
+                        bSquares.add(blackSq);
+                        squareGroup.getChildren().add(blackSq);
                     }
                     if(j <= (boardSize/2)-2 && (i+j)%2 != 0) {
-                        rCheckers.add(InitChecker(CheckerType.RED, new int[]{i, j}, 0.4));
+                        rCheckers.add(new Checker(CheckerType.RED, new int[]{i, j}));
                     }
                     else if(j >= (boardSize/2)+1 && (i+j)%2 != 0) {
-                        bCheckers.add(InitChecker(CheckerType.BLACK, new int[]{i, j}, 0.4));
+                        bCheckers.add(new Checker(CheckerType.BLACK, new int[]{i, j}));
                     }
                 }
             }
-            window.setTitle("Checkers");
-            window.setScene(new Scene(createGameContent(new GameState(boardSize, rCheckers, bCheckers, wSquares, bSquares))));
-            window.show();
+            GameState state = new GameState(boardSize, rCheckers, bCheckers, wSquares, bSquares);
+            controller = new GameStateController(state);
+            updateGameContent(controller.getState());
         });
 
         HBox h = new HBox();
         h.setPadding(new Insets(0, 25, 25, 25));
         h.setAlignment(Pos.CENTER);
         h.setSpacing(5);
-        h.getChildren().addAll(difficultyMsg, difficultyChoice, boardSizeMsg, boardSizeChoice);
+        h.getChildren().addAll(competitionMsg, playAgainstAI, difficultyMsg, difficultyChoice);
 
         HBox h2 = new HBox();
         h2.setAlignment(Pos.CENTER);
         h2.setSpacing(5);
-        h2.getChildren().addAll(generateNewGame);
+        h2.getChildren().addAll(boardSizeMsg, boardSizeChoice, generateNewGame);
 
         VBox v = new VBox();
         v.setPadding(new Insets(25, 25, 25, 25));
@@ -100,17 +109,13 @@ public class GameGUI extends Application {
         window.show();
     }
 
-    private Parent createGameContent(GameState state) {
+    private void updateGameContent(GameState state) {
         int fontSize = 15;
 
-        squareGroup = new Group();
-        checkerGroup = new Group();
+        Group checkerGroup = new Group();
 
-        board = new Pane();
+        Pane board = new Pane();
         board.setPrefSize(WIDTH * SQUARESIZE, HEIGHT * SQUARESIZE);
-        board.getChildren().addAll(squareGroup, checkerGroup);
-
-        controller = new GameStateController(state);
 
         Label turnMsg1 = new Label("It's currently");
         turnLabel = new Label(state.getWhosTurnName());
@@ -130,24 +135,20 @@ public class GameGUI extends Application {
         redPointsMsg.setFont(new Font(fontSize));
         redPointsLabel.setFont(new Font(fontSize));
 
-
-        for(Square white : state.getWSquares()) {
-            squareGroup.getChildren().add(white);
-            white.relocate(white.getCoor()[0] * SQUARESIZE, white.getCoor()[1] * SQUARESIZE);
-        }
-        for(Square black : state.getBSquares()) {
-            squareGroup.getChildren().add(black);
-            black.relocate(black.getCoor()[0] * SQUARESIZE, black.getCoor()[1] * SQUARESIZE);
-        }
-
         for(Checker red : state.getCheckers(CheckerType.RED)) {
-            checkerGroup.getChildren().add(red);
+            checkerGroup.getChildren().add(InitChecker(red, red.getCurrCoor(), Color.RED, Color.WHITE, 0.4));
             red.relocate(red.getCurrCoor()[0] * SQUARESIZE, red.getCurrCoor()[1] * SQUARESIZE);
         }
         for(Checker black : state.getCheckers(CheckerType.BLACK)) {
-            checkerGroup.getChildren().add(black);
+            checkerGroup.getChildren().add(InitChecker(black, black.getCurrCoor(), Color.BLACK, Color.WHITE, 0.4));
             black.relocate(black.getCurrCoor()[0] * SQUARESIZE, black.getCurrCoor()[1] * SQUARESIZE);
         }
+
+        board.getChildren().addAll(squareGroup, checkerGroup);
+
+//        CheckBox assistCheckBox = new CheckBox("Assistance");
+//        if(assistCheckBox.isSelected()) { controller.getState().markCheckersAtRisk(); }
+//        else { controller.getState().unMarkCheckersAtRisk(); }
 
         HBox h1 = new HBox();
         h1.setPadding(new Insets(25, 25, 25, 25));
@@ -180,11 +181,34 @@ public class GameGUI extends Application {
         h4.setSpacing(5);
         h4.getChildren().addAll(board, v);
 
-        return h4;
+        window.setTitle("Checkers");
+        window.setScene(new Scene(h4));
+        window.show();
     }
 
-    private Checker InitChecker(CheckerType type, int[] coor, double size) {
-        Checker checker = new Checker(type, coor, size);
+    private Checker InitChecker(Checker checker, int[] coor, Color colour, Color secColour, double size) {
+        checker.setCurrCoor(coor);
+
+        Ellipse checkerPiece = new Ellipse(SQUARESIZE * size, SQUARESIZE * size);
+        checkerPiece.setFill(colour);
+        checkerPiece.setStroke(secColour);
+        checkerPiece.setStrokeWidth(3);
+
+        checkerPiece.setTranslateX((SQUARESIZE - checkerPiece.getRadiusX() * 2) / 2);
+        checkerPiece.setTranslateY((SQUARESIZE - checkerPiece.getRadiusY() * 2) / 2);
+
+        checker.getChildren().add(checkerPiece);
+
+        if (checker.isAtRisk()) {
+            checkerPiece.setStroke(Color.GREENYELLOW);
+        }
+        else {
+            if (checker.getKing()) {
+                checkerPiece.setStroke(Color.GOLD);
+            } else {
+                checkerPiece.setStroke(Color.WHITE);
+            }
+        }
 
         checker.setOnMouseReleased(e -> {
             int[] newCoor = new int[]{
@@ -192,23 +216,37 @@ public class GameGUI extends Application {
                     (int) (checker.getLayoutY() + SQUARESIZE / 2) / SQUARESIZE};
 
             controller.getState().takeTurn(checker, newCoor);
-            controller.makeAIMove(3);
-            System.out.println("AFTER AI: " + controller.getState().getWhosTurn());
+            if(controller.getState().isComplete()) { AlertBox.display("Congratulations", window); }
 
-            window.setScene(new Scene(createGameContent(controller.getState())));
 
-//            for(Checker checker_ : controller.getState().getCheckers(CheckerType.BLACK)) {
-//                for(int i : checker_.getCurrCoor()) {
-//                    System.out.println(i);
-//                }
-//            }
+            if (controller.getState().getWhosTurn() == CheckerType.RED) {
+                if(!playAgainstAI.isSelected()) {
+                    controller.makeAIMove(0);
+                }
+                else if (difficultyChoice.getValue().equals("Easy")) {
+                    controller.makeAIMove(1);
+                }
+                else if (difficultyChoice.getValue().equals("Regular")) {
+                    controller.makeAIMove(2);
+                }
+                else if (difficultyChoice.getValue().equals("Hard")) {
+                    controller.makeAIMove(3);
+                }
+            }
+            if(controller.getState().isComplete()) { AlertBox.display("Commiserations", window); }
+            updateGameContent(controller.getState());
+        });
+
+        checker.setOnMousePressed(e -> {
+            checker.setMouseCoor(new double[]{e.getSceneX(), e.getSceneY()});
+        });
+
+        checker.setOnMouseDragged(e -> {
+            checker.relocate(e.getSceneX() - checker.getMouseCoor()[0] + (checker.getCurrCoor()[0] * SQUARESIZE),
+                    e.getSceneY() - checker.getMouseCoor()[1] + (checker.getCurrCoor()[1] * SQUARESIZE));
         });
 
         return checker;
-    }
-
-    public void UpdateGUI() {
-
     }
 
     public static void main(String[] args) {

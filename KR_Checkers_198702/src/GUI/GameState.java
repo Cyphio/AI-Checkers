@@ -162,11 +162,11 @@ public class GameState implements Serializable {
                 makeKing(checker);
             }
 
-            changeTurn();
-
             if(isComplete()) {
                 System.out.println(getWhosTurnName() + " wins!!!");
             }
+
+            changeTurn();
         }
     }
 
@@ -236,34 +236,27 @@ public class GameState implements Serializable {
         else if (checker.getType() == CheckerType.RED) { incrementRedPoints(); }
     }
 
-//    public HashMap<Checker, int[]> getCheckersAtRisk() {
-//        // Reset the risk of each checker in the game
-//        for(Checker checker : getAllCheckers()) {
-//            if(checker.isAtRisk()) { checker.removeAtRisk(); }
-//        }
-//
-//        // Get an ArrayList of the current player's checkers
-//        ArrayList<Checker> checkers = getCheckers(getWhosTurn());
-//
-//        // checkersAtRisk holds all checkers that are at risk of being captured along with the coordinates of the
-//        // checker that poses the risk to it.
-//        HashMap<Checker, int[]> checkersAtRisk = new HashMap<>();
-//
+//    public void markCheckersAtRisk() {
 //        // Iterate through each checker & check whether they pose a risk of capture to any other checker.
-//        for(Checker checker : checkers) {
+//        ArrayList<Checker> checkers = getCheckers(getWhosTurn());
+//        for (Checker checker : checkers) {
 //            int[] currCoor = checker.getCurrCoor();
-//            for(int[] jumpCoor : checker.getJumpCoors()) {
+//            for (int[] jumpCoor : checker.getJumpCoors()) {
 //                int[] newCoor = new int[]{currCoor[0] + jumpCoor[0], currCoor[1] + jumpCoor[1]};
-//                if(isLegalJump(currCoor, newCoor) && getSquareAt(newCoor).canMoveTo()) {
+//                if (isLegalJump(currCoor, newCoor) && getSquareAt(newCoor).canMoveTo()) {
 //                    Checker midChecker = getCheckerAt(new int[]{(currCoor[0] + newCoor[0]) / 2, (currCoor[1] + newCoor[1]) / 2});
-//                    checkersAtRisk.put(midChecker, currCoor);
-//
 //                    // set the checker at risk of being captured to at risk - changes the outline of the checker
 //                    midChecker.setAtRisk();
 //                }
 //            }
 //        }
-//        return checkersAtRisk;
+//    }
+//
+//    public void unMarkCheckersAtRisk() {
+//        ArrayList<Checker> checkers = getAllCheckers();
+//        for(Checker checker : checkers) {
+//            checker.removeAtRisk();
+//        }
 //    }
 
     public ArrayList<int[]> getAllValidMoves(Checker checker) {

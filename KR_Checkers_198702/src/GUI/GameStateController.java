@@ -3,11 +3,11 @@ package GUI;
 public class GameStateController {
 
     private GameState state;
-    private Bot bot;
+    private AI AI;
 
     public GameStateController(GameState state) {
         this.state = state;
-        bot = new Bot();
+        AI = new AI();
     }
 
     public GameState getState() {
@@ -15,8 +15,8 @@ public class GameStateController {
     }
 
     public void makeAIMove(int depth) {
-        GameState tempState = bot.miniMax(state, depth, true);
-        System.out.println("BEST STATE: " + tempState.evaluateFitness());
-        state = tempState;
+        if(!state.isComplete()) {
+            state = AI.miniMax(state, depth, true);
+        }
     }
 }

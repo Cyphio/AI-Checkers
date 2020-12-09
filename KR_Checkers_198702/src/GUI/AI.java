@@ -2,11 +2,14 @@ package GUI;
 
 import java.util.ArrayList;
 
-public class Bot {
+public class AI {
 
     private DeepCopy dc;
 
-    public Bot() {
+    private int alpha;
+    private int beta;
+
+    public AI() {
         dc = new DeepCopy();
     }
 
