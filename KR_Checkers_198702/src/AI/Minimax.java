@@ -4,19 +4,17 @@ import GUI.Checker;
 import GUI.CheckerType;
 import GUI.GameState;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 
-public class Minimax {
+public class Minimax implements Serializable {
 
-    public Minimax() { }
+    public Minimax() {}
 
     public GameState getAiState(GameState state, int depth, boolean maxPlayer) {
         // Base case, if depth of tree is 0, or there is a winner, return the GameState object at that tree level
         if(depth == 0 || state.winner() != null) {
+            System.out.println(state);
             return state;
         }
 
@@ -48,11 +46,11 @@ public class Minimax {
     }
 
     private ArrayList<GameState> getAllMoves(GameState state, CheckerType type) {
-        ArrayList<GameState> moveStates = null;
+        ArrayList<GameState> moveStates = new ArrayList<>();
         for(Checker checker : state.getCheckers(type)) {
             ArrayList<int[]> validMoves = state.getAllValidMoves(checker);
             for(int[] move : validMoves) {
-                GameState tempCopy = (GameState) deepCopy(state);
+                GameState tempCopy = (GameState)  deepCopy(state);
                 GameState newState = simulateMove(checker, move, tempCopy);
                 moveStates.add(newState);
             }

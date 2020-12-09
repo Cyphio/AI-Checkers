@@ -4,12 +4,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 
+import java.io.Serializable;
+
 import static GUI.GameGUI.SQUARESIZE;
 
-public class Checker extends StackPane {
+public class Checker extends StackPane implements Serializable {
 
     private CheckerType type;
-    private Ellipse checkerPiece;
+    //private transient Ellipse checkerPiece;
     private boolean atRisk;
     private int[] currCoor;
     private double[] mouseCoor;
@@ -60,13 +62,11 @@ public class Checker extends StackPane {
 
     public void setAtRisk() {
         atRisk = true;
-        checkerPiece.setStroke(Color.GREENYELLOW);
     }
 
     public void removeAtRisk() {
         atRisk = false;
-        if(isKing) { checkerPiece.setStroke(Color.GOLD); }
-        else { checkerPiece.setStroke(Color.WHITE); }
+
     }
 
     public boolean isAtRisk() {
@@ -75,7 +75,6 @@ public class Checker extends StackPane {
 
     public void turnIntoKing() {
         isKing = true;
-        checkerPiece.setStroke(Color.GOLD);
     }
 
     public boolean getKing() {
@@ -87,7 +86,7 @@ public class Checker extends StackPane {
 
         relocate(SQUARESIZE + SQUARESIZE / 2, SQUARESIZE + SQUARESIZE / 2);
 
-        checkerPiece = new Ellipse(SQUARESIZE * size, SQUARESIZE * size);
+        Ellipse checkerPiece = new Ellipse(SQUARESIZE * size, SQUARESIZE * size);
         checkerPiece.setFill(colour);
         checkerPiece.setStroke(secColour);
         checkerPiece.setStrokeWidth(3);
@@ -103,6 +102,15 @@ public class Checker extends StackPane {
 
         setOnMouseDragged(e -> {
             relocate(e.getSceneX() - mouseCoor[0] + (currCoor[0] * SQUARESIZE), e.getSceneY() - mouseCoor[1] + (currCoor[1] * SQUARESIZE));
+        });
+
+        setOnMouseReleased(e -> {
+            if(isAtRisk()) {
+                checkerPiece.setStroke(Color.GREENYELLOW);
+            } else {
+                if(isKing) { checkerPiece.setStroke(Color.GOLD); }
+                else { checkerPiece.setStroke(Color.WHITE); }
+            }
         });
     }
 }

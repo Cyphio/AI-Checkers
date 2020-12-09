@@ -3,11 +3,12 @@ package GUI;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.io.Serializable;
+
 import static GUI.GameGUI.SQUARESIZE;
 
-public class Square extends Rectangle {
+public class Square extends Rectangle implements Serializable {
 
-    private Color colour;
     private int[] coor;
     private boolean canMoveTo;
 
@@ -15,22 +16,17 @@ public class Square extends Rectangle {
         this.coor = coor;
 
         if(type == SquareType.BLACK) {
-            colour = Color.BLACK;
+            setFill(Color.BLACK);
             setCanMoveTo(true);
         }
         if(type == SquareType.WHITE) {
-            colour = Color.WHITE;
+            setFill(Color.WHITE);
             setCanMoveTo(false);
         }
 
-        setFill(colour);
         setWidth(SQUARESIZE);
         setHeight(SQUARESIZE);
         relocate(coor[0] * SQUARESIZE, coor[1] * SQUARESIZE);
-    }
-
-    public Color getColour() {
-        return colour;
     }
 
     public int[] getCoor() {

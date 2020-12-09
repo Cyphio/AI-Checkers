@@ -1,5 +1,7 @@
 package GUI;
 
+import AI.Minimax;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +29,8 @@ public class GameState implements Serializable {
 
     private CheckerType whosTurn;
 
+    private Minimax minimax;
+
     public GameState(int boardSize, ArrayList<Checker> rCheckers, ArrayList<Checker> bCheckers, ArrayList<Square> wSquares, ArrayList<Square> bSquares) {
         this.boardSize = boardSize;
 
@@ -43,6 +47,8 @@ public class GameState implements Serializable {
         blackPoints = 0;
 
         whosTurn = CheckerType.BLACK;
+
+        minimax = new Minimax();
 
         checkerState = new Checker[rCheckers.size()][bCheckers.size()];
         squareState = new Square[wSquares.size()][bSquares.size()];
@@ -150,7 +156,7 @@ public class GameState implements Serializable {
         return squareState[coor[0]][coor[1]];
     }
 
-    public void takeTurn(Checker checker, int[] newCoor) {
+    public GameState takeTurn(Checker checker, int[] newCoor) {
         if (tryMove(checker, newCoor)) {
             if (isAtBaseline(checker)) {
                 makeKing(checker);
@@ -159,14 +165,15 @@ public class GameState implements Serializable {
             changeTurn();
 
             HashMap<Checker, int[]> checkersAtRisk =  getCheckersAtRisk();
-//            if(checkersAtRisk.keySet().size() == 1) {
-//                tryForcedCapture
-//            }
 
             if(isComplete()) {
                 System.out.println(getWhosTurnName() + " wins!!!");
             }
         }
+        if(getWhosTurn() == CheckerType.RED) {
+            return minimax.getAiState(this, 2, true);
+        }
+        return this;
     }
 
     public boolean isAtBaseline(Checker checker) {
@@ -289,15 +296,19 @@ public class GameState implements Serializable {
 
         for (int[] moveCoor : checker.getMoveCoors()) {
             int[] newCoor = new int[]{currCoor[0] + moveCoor[0], currCoor[1] + moveCoor[1]};
-            if (isLegalMove(currCoor, newCoor) && getSquareAt(newCoor).canMoveTo()) {
-                validMoves.add(moveCoor);
+            if(newCoor[0] >= 0 && newCoor[0] < boardSize && newCoor[1] >= 0 && newCoor[1] < boardSize) {
+                if (isLegalMove(currCoor, newCoor) && getSquareAt(newCoor).canMoveTo()) {
+                    validMoves.add(moveCoor);
+                }
             }
         }
 
         for (int[] jumpCoor : checker.getJumpCoors()) {
             int[] newCoor = new int[]{currCoor[0] + jumpCoor[0], currCoor[1] + jumpCoor[1]};
-            if (isLegalJump(currCoor, newCoor) && getSquareAt(newCoor).canMoveTo()) {
-                validMoves.add(jumpCoor);
+            if(newCoor[0] >= 0 && newCoor[0] < boardSize && newCoor[1] >= 0 && newCoor[1] < boardSize) {
+                if (isLegalJump(currCoor, newCoor) && getSquareAt(newCoor).canMoveTo()) {
+                    validMoves.add(jumpCoor);
+                }
             }
         }
 

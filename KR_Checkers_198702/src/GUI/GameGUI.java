@@ -166,7 +166,7 @@ public class GameGUI extends Application {
                     (int) (checker.getLayoutX() + SQUARESIZE / 2) / SQUARESIZE,
                     (int) (checker.getLayoutY() + SQUARESIZE / 2) / SQUARESIZE};
 
-            gameState.takeTurn(checker, newCoor);
+            gameState = gameState.takeTurn(checker, newCoor);
 
             turnLabel.setText(gameState.getState().getWhosTurnName());
             blackPointsLabel.setText(Integer.toString(gameState.getState().getBlackPoints()));
@@ -196,6 +196,7 @@ public class GameGUI extends Application {
             checkerGroup.getChildren().add(black);
             black.relocate(black.getCurrCoor()[0] * SQUARESIZE, black.getCurrCoor()[1] * SQUARESIZE);
         }
+
     }
 
     public static void main(String[] args) {
