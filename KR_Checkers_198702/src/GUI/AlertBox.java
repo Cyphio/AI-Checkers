@@ -18,15 +18,15 @@ import javafx.stage.Stage;
 public class AlertBox {
     
     /**
-     * The display method initialises an un-closeable alert box and populates it according to
+     * The endOfGameBox method initialises an un-closeable alert box and populates it according to
      * the message passed as a parameter.
      */
-    public static void endOfGameBox(String message, Stage guiStage) {
+    public static void endOfGameBox(Stage guiStage) {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle(message);
+        window.setTitle("Game over");
         Label text = new Label();
-        text.setText(message);
+        text.setText("Game over!");
         text.setFont(Font.font("Arial", FontWeight.BOLD, 60));
         text.setTextFill(Paint.valueOf("#000000"));
         
@@ -39,16 +39,16 @@ public class AlertBox {
         ui.setAlignment(Pos.CENTER);
         
         StackPane pane = new StackPane();
-        pane.getChildren().addAll(ui);
+        pane.getChildren().add(ui);
         
-        window.setScene(new Scene(pane, 750, 300));
+        window.setScene(new Scene(pane, 600, 300));
         window.showAndWait();
     }
 
-    public static void helpBox() {
+    public static void ruleBox() {
         Stage window = new Stage();
         //window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Help");
+        window.setTitle("Rules");
         Label text = new Label();
         String rules = "The object of checkers is to eliminate all opposing checkers, or to put your opponent in a situation in which they can't make a move.\n" +
                 "\nHere are a set of basic rules:\n" +

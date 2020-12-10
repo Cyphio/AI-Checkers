@@ -61,18 +61,6 @@ public class GameState implements Serializable {
         return boardSize;
     }
 
-    public ArrayList<Checker> getCheckers(CheckerType type) {
-        if(type == CheckerType.BLACK) { return bCheckers; }
-        else { return rCheckers; }
-    }
-
-    public ArrayList<Checker> getAllCheckers() {
-        ArrayList<Checker> allCheckers = new ArrayList<>();
-        allCheckers.addAll(rCheckers);
-        allCheckers.addAll(bCheckers);
-        return allCheckers;
-    }
-
     public int getRedPoints() { return redPoints; }
 
     public void incrementRedPoints() {
@@ -85,33 +73,16 @@ public class GameState implements Serializable {
         blackPoints++;
     }
 
-    public void changeTurn() {
-        if(whosTurn == CheckerType.BLACK) { whosTurn = CheckerType.RED; }
-        else if(whosTurn == CheckerType.RED) { whosTurn = CheckerType.BLACK; }
+    public ArrayList<Checker> getCheckers(CheckerType type) {
+        if(type == CheckerType.BLACK) { return bCheckers; }
+        else { return rCheckers; }
     }
 
-    public String getWhosTurnName() {
-        if(whosTurn == CheckerType.BLACK) { return "Black"; }
-        else { return "Red"; }
-    }
-
-    public CheckerType getWhosTurn() { return whosTurn; }
-
-    public void update() {
-        for(Square black : bSquares) {
-            int[] coor = black.getCoor();
-            squareState[coor[0]][coor[1]].setCanMoveTo(true);
-        }
-        for(Checker red : rCheckers) {
-            int[] coor = red.getCurrCoor();
-            checkerState[coor[0]][coor[1]] = red;
-            squareState[coor[0]][coor[1]].setCanMoveTo(false);
-        }
-        for(Checker black : bCheckers) {
-            int[] coor = black.getCurrCoor();
-            checkerState[coor[0]][coor[1]] = black;
-            squareState[coor[0]][coor[1]].setCanMoveTo(false);
-        }
+    public ArrayList<Checker> getAllCheckers() {
+        ArrayList<Checker> allCheckers = new ArrayList<>();
+        allCheckers.addAll(rCheckers);
+        allCheckers.addAll(bCheckers);
+        return allCheckers;
     }
 
     public Checker getCheckerAt(int[] coor) {
@@ -133,6 +104,23 @@ public class GameState implements Serializable {
         }
     }
 
+    public Square getSquareAt(int[] coor) {
+        return squareState[coor[0]][coor[1]];
+    }
+
+    public void changeTurn() {
+        if(whosTurn == CheckerType.BLACK) { whosTurn = CheckerType.RED; }
+        else if(whosTurn == CheckerType.RED) { whosTurn = CheckerType.BLACK; }
+    }
+
+    public String getWhosTurnName() {
+        if(whosTurn == CheckerType.BLACK) { return "Black"; }
+        else { return "Red"; }
+    }
+
+    public CheckerType getWhosTurn() { return whosTurn; }
+
+
     public void makeKing(Checker checker) {
         checker.turnIntoKing();
         if(checker.getType() == CheckerType.BLACK) { nBlackKings++; }
@@ -143,10 +131,6 @@ public class GameState implements Serializable {
         makeKing(checker);
         if(midChecker.getType() == CheckerType.BLACK) { nBlackKings--; }
         else { nRedKings--; }
-    }
-
-    public Square getSquareAt(int[] coor) {
-        return squareState[coor[0]][coor[1]];
     }
 
     public boolean isAtBaseline(Checker checker) {
@@ -161,7 +145,6 @@ public class GameState implements Serializable {
             if (isAtBaseline(checker)) {
                 makeKing(checker);
             }
-
             changeTurn();
         }
     }
@@ -232,51 +215,9 @@ public class GameState implements Serializable {
         else if (checker.getType() == CheckerType.RED) { incrementRedPoints(); }
     }
 
-//    private boolean canForceCapture() {
-//        ArrayList<Checker> currCheckers = getCheckers(getWhosTurn());
-//        for(Checker checker : currCheckers) {
-//            ArrayList<int[]> moves = getAllValidMoves(checker);
-//            for (int[] move : moves) {
-//                int[] newCoor = new int[]{checker.getCurrCoor()[0] + move[0], checker.getCurrCoor()[1] + move[1]};
-//                if (newCoor[0] > 0 && newCoor[0] < boardSize - 1 && newCoor[1] > 0 && newCoor[1] < boardSize - 1) {
-//                    if (isLegalJump(checker.getCurrCoor(), newCoor) && getSquareAt(newCoor).canMoveTo()) {
-//                        capture(checker, newCoor);
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-//        return false;
-//    }
-
-//    public void markCheckersAtRisk() {
-//        // Iterate through each checker & check whether they pose a risk of capture to any other checker.
-//        ArrayList<Checker> checkers = getCheckers(getWhosTurn());
-//        for (Checker checker : checkers) {
-//            int[] currCoor = checker.getCurrCoor();
-//            for (int[] jumpCoor : checker.getJumpCoors()) {
-//                int[] newCoor = new int[]{currCoor[0] + jumpCoor[0], currCoor[1] + jumpCoor[1]};
-//                if (isLegalJump(currCoor, newCoor) && getSquareAt(newCoor).canMoveTo()) {
-//                    Checker midChecker = getCheckerAt(new int[]{(currCoor[0] + newCoor[0]) / 2, (currCoor[1] + newCoor[1]) / 2});
-//                    // set the checker at risk of being captured to at risk - changes the outline of the checker
-//                    midChecker.setAtRisk();
-//                }
-//            }
-//        }
-//    }
-//
-//    public void unMarkCheckersAtRisk() {
-//        ArrayList<Checker> checkers = getAllCheckers();
-//        for(Checker checker : checkers) {
-//            checker.removeAtRisk();
-//        }
-//    }
-
     public ArrayList<int[]> getAllValidMoves(Checker checker) {
         ArrayList<int[]> validMoves = new ArrayList<>();
-
         int[] currCoor = checker.getCurrCoor();
-
         for (int[] moveCoor : checker.getMoveCoors()) {
             int[] newCoor = new int[]{currCoor[0] + moveCoor[0], currCoor[1] + moveCoor[1]};
             if(newCoor[0] >= 0 && newCoor[0] < boardSize && newCoor[1] >= 0 && newCoor[1] < boardSize) {
@@ -285,7 +226,6 @@ public class GameState implements Serializable {
                 }
             }
         }
-
         for (int[] jumpCoor : checker.getJumpCoors()) {
             int[] newCoor = new int[]{currCoor[0] + jumpCoor[0], currCoor[1] + jumpCoor[1]};
             if(newCoor[0] >= 0 && newCoor[0] < boardSize && newCoor[1] >= 0 && newCoor[1] < boardSize) {
@@ -294,8 +234,24 @@ public class GameState implements Serializable {
                 }
             }
         }
-
         return validMoves;
+    }
+
+    public void update() {
+        for(Square black : bSquares) {
+            int[] coor = black.getCoor();
+            squareState[coor[0]][coor[1]].setCanMoveTo(true);
+        }
+        for(Checker red : rCheckers) {
+            int[] coor = red.getCurrCoor();
+            checkerState[coor[0]][coor[1]] = red;
+            squareState[coor[0]][coor[1]].setCanMoveTo(false);
+        }
+        for(Checker black : bCheckers) {
+            int[] coor = black.getCurrCoor();
+            checkerState[coor[0]][coor[1]] = black;
+            squareState[coor[0]][coor[1]].setCanMoveTo(false);
+        }
     }
 
     public boolean isComplete() {

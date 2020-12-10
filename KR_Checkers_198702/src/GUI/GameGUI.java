@@ -147,9 +147,9 @@ public class GameGUI extends Application {
 
         board.getChildren().addAll(squareGroup, checkerGroup);
 
-        Button helpButton = new Button("Help");
-        helpButton.setOnMousePressed(e -> {
-            AlertBox.helpBox();
+        Button rulesButton = new Button("Rules");
+        rulesButton.setOnMousePressed(e -> {
+            AlertBox.ruleBox();
         });
 
         HBox h1 = new HBox();
@@ -175,7 +175,7 @@ public class GameGUI extends Application {
         v.setPadding(new Insets(0, 25, 25, 25));
         v.setAlignment(Pos.CENTER);
         v.setSpacing(5);
-        v.getChildren().addAll(h1, h2, h3, helpButton);
+        v.getChildren().addAll(h1, h2, h3, rulesButton);
 
         HBox h4 = new HBox();
         h4.setPadding(new Insets(25, 25, 25, 25));
@@ -229,17 +229,17 @@ public class GameGUI extends Application {
                     controller.makeAIMove(1);
                 }
                 else if (difficultyChoice.getValue().equals("Regular")) {
-                    controller.makeAIMove(3);
+                    controller.makeAIMove(2);
                 }
                 else if (difficultyChoice.getValue().equals("Hard")) {
-                    controller.makeAIMove(4);
+                    controller.makeAIMove(3);
                 }
             }
 
             updateGameContent(controller.getState());
 
             if(controller.getState().isComplete()) {
-                AlertBox.endOfGameBox("GAME OVER", window);
+                AlertBox.endOfGameBox(window);
             }
         });
 
