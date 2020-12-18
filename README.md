@@ -1,4 +1,4 @@
-# Checkers
+# AI Checkers
 
 Written in Java using the JavaFX GUI library, this project implemenents an interactable game of Checkers with a competitive AI opponent.
 
